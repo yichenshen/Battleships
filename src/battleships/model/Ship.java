@@ -6,10 +6,6 @@
 package battleships.model;
 
 /**
- * Created by yichen on 4/30/15.
- */
-
-/**
  * The interface for a ship on the board.
  * <p>
  * A ship consists of a number of squares.
@@ -52,7 +48,7 @@ public interface Ship extends Iterable<Ship.Square> {
     Square getBottomRight();
 
     /**
-     *
+     * A interface describing a square on the board.
      */
     interface Square {
 
