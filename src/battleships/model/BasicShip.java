@@ -5,10 +5,6 @@
 
 package battleships.model;
 
-/**
- * Created by yichen on 4/30/15.
- */
-
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -79,6 +75,9 @@ public class BasicShip implements Ship {
         return shipSquares.iterator();
     }
 
+    /**
+     * A basic implementation of the square class.
+     */
     public static class BasicSquare implements Square {
 
         private int X, Y;

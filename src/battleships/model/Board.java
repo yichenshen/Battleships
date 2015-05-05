@@ -1,13 +1,9 @@
 /*
- * Copyright (c) 2015 Shen Yichen <2007.yichen@gmail.com>.
+ * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com
  * Under The MIT License.
  */
 
 package battleships.model;
-
-/**
- * Created by yichen on 4/30/15.
- */
 
 import java.util.Collection;
 
@@ -51,6 +47,21 @@ public interface Board {
      * @return Probability Map
      */
     double[][] getProbabilityMap(Ship ship);
+
+    /**
+     * Returns the map showing number of possible ship placements for each square.
+     *
+     * @return The ship placement map
+     */
+    int[][] getShipsMap();
+
+    /**
+     * Returns the map showing number of possible ship placements for each square, for the given ship.
+     *
+     * @param ship Ship to get map for
+     * @return The ship placement map
+     */
+    int[][] getShipsMap(Ship ship);
 
     /**
      * Adds a ship to the board.
