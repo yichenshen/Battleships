@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Shen Yichen <2007.yichen@gmail.com>.
+ * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
 
@@ -15,7 +15,7 @@ package battleships.model;
  * @author Shen Yichen <2007.yichen@gmail.com>
  * @since v1.0.0
  */
-public interface Ship extends Iterable<Ship.Square> {
+public interface Ship extends Iterable<Square> {
 
     /**
      * Adds a new square to the ship.
@@ -24,6 +24,13 @@ public interface Ship extends Iterable<Ship.Square> {
      * @param y Y-coordinate of square
      */
     void addSquare(int x, int y);
+
+    /**
+     * Returns the number of squares which makes up the ship.
+     *
+     * @return The number of squares
+     */
+    int numSquares();
 
     /**
      * Moves the ship.
@@ -46,32 +53,4 @@ public interface Ship extends Iterable<Ship.Square> {
      * @return The bottom right square.
      */
     Square getBottomRight();
-
-    /**
-     * A interface describing a square on the board.
-     */
-    interface Square {
-
-        /**
-         * Returns the X value of this square.
-         *
-         * @return X value
-         */
-        int getX();
-
-        /**
-         * Returns the Y value of this square.
-         *
-         * @return Y value.
-         */
-        int getY();
-
-        /**
-         * Shifts the square.
-         *
-         * @param x X offset
-         * @param y Y offset
-         */
-        void offset(int x, int y);
-    }
 }

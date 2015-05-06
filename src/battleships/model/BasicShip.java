@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Shen Yichen <2007.yichen@gmail.com>.
+ * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
 
@@ -27,12 +27,12 @@ public class BasicShip implements Ship {
      */
     public BasicShip() {
         shipSquares = new TreeSet<>();
-        bottomRight = new BasicSquare(0, 0);
+        bottomRight = new Square(0, 0);
     }
 
     @Override
     public void addSquare(int x, int y) {
-        Square newSquare = new BasicSquare(x, y);
+        Square newSquare = new Square(x, y);
 
         shipSquares.add(newSquare);
 
@@ -44,6 +44,11 @@ public class BasicShip implements Ship {
             bottomRight.offset(0, y - bottomRight.getY());
         }
 
+    }
+
+    @Override
+    public int numSquares() {
+        return shipSquares.size();
     }
 
     @Override
@@ -67,7 +72,7 @@ public class BasicShip implements Ship {
 
     @Override
     public Square getBottomRight() {
-        return new BasicSquare(bottomRight);
+        return new Square(bottomRight);
     }
 
     @Override
@@ -75,48 +80,4 @@ public class BasicShip implements Ship {
         return shipSquares.iterator();
     }
 
-    /**
-     * A basic implementation of the square class.
-     */
-    public static class BasicSquare implements Square {
-
-        private int X, Y;
-
-        /**
-         * Setter constructor.
-         *
-         * @param x X coordinate
-         * @param y Y coordinate
-         */
-        public BasicSquare(int x, int y) {
-            X = x;
-            Y = y;
-        }
-
-        /**
-         * Copy constructor.
-         *
-         * @param sqr The square to be copied
-         */
-        public BasicSquare(Square sqr) {
-            X = sqr.getX();
-            Y = sqr.getY();
-        }
-
-        @Override
-        public int getX() {
-            return X;
-        }
-
-        @Override
-        public int getY() {
-            return Y;
-        }
-
-        @Override
-        public void offset(int x, int y) {
-            X += x;
-            Y += y;
-        }
-    }
 }

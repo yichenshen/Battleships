@@ -1,13 +1,11 @@
 /*
- * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com
+ * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
 
 package battleships.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * An implementation of Board that calculates probability independently for each {@code Ship}.
@@ -28,8 +26,32 @@ import java.util.List;
  */
 public class IndependentBoard implements Board {
 
-    private int width, height;
+    /**
+     * States of a square on the board.
+     */
+    public static enum SquareState {
+        /**
+         * When square is open and untouched.
+         */
+        OPEN,
+        /**
+         * When the square is confirmed to be empty.
+         */
+        MISS,
+        /**
+         * When the square is confirmed to be occupied.
+         */
+        HIT,
+        /**
+         * When the sqaure is occupied by a sunken ship.
+         */
+        SUNK
+    }
+
+    private SquareState[][] board;
     private List<Ship> ships;
+    private SortedMap<Integer, List<Square>> possibleShipConfigs;
+
     /**
      * Creates a board with given width and height.
      *
@@ -37,19 +59,30 @@ public class IndependentBoard implements Board {
      * @param height The board height in squares
      */
     public IndependentBoard(int width, int height) {
-        this.width = width;
-        this.height = height;
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Board width/height must be bigger than 0!");
+        }
+        board = new SquareState[width][];
+        for (int i = 0; i < board.length; i++) {
+            board[i] = new SquareState[height];
+            for (int j = 0; j < board[i].length; j++) {
+                board[i][j] = SquareState.OPEN;
+            }
+        }
+
         ships = new ArrayList<>();
+        possibleShipConfigs = new TreeMap<>();
     }
 
     @Override
     public int getWidth() {
-        return width;
+        return board.length;
     }
 
     @Override
     public int getHeight() {
-        return height;
+        //Height is guaranteed to be at least 1
+        return board[0].length;
     }
 
     @Override
@@ -83,7 +116,37 @@ public class IndependentBoard implements Board {
         return null;
     }
 
-    private void genMap(Ship ship){
-       //TODO add map generation
+    private void genMap(Ship ship) {
+        Square shipSize = ship.getBottomRight();
+
+        for (int x = 0; x < board.length - shipSize.getX() + 1; x++) {
+            SquareState[] col = board[x];
+            for (int y = 0; y < col.length - shipSize.getY() + 1; y++) {
+                //Try each config
+                //TODO account for rotation
+                boolean fits = true;
+                for (Square square : ship) {
+                    int checkX = x + square.getX();
+                    int checkY = y + square.getY();
+
+                    //TODO Consider cases besides OPEN
+                    fits &= board[checkX][checkY] == SquareState.OPEN;
+                }
+                //Add to config list if config is a valid fit
+                //TODO add to count matrix
+                //TODO set up reverse and ship reference maps
+                if (fits) {
+                    int newKey = possibleShipConfigs.lastKey() + 1;
+                    List<Square> coords = new ArrayList<>(ship.numSquares());
+                    for (Square square : ship) {
+                        int checkX = x + square.getX();
+                        int checkY = y + square.getY();
+
+                        coords.add(new Square(checkX, checkY));
+                    }
+                    possibleShipConfigs.put(newKey, coords);
+                }
+            }
+        }
     }
 }

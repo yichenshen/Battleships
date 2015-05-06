@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com
+ * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
 
