@@ -26,6 +26,14 @@ public interface Ship extends Iterable<Square> {
     void addSquare(int x, int y);
 
     /**
+     * Adds a new square with the {@code Square} object.
+     *
+     * @param sqr The {@code Square} object
+     * @see Square
+     */
+    void addSquare(Square sqr);
+
+    /**
      * Returns the number of squares which makes up the ship.
      *
      * @return The number of squares

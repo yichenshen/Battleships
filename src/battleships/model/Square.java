@@ -11,7 +11,7 @@ package battleships.model;
  * @author Shen Yichen <2007.yichen@gmail.com>
  * @since v1.0.0
  */
-public class Square {
+public class Square implements Comparable<Square> {
 
     private int x, y;
 
@@ -63,5 +63,40 @@ public class Square {
     public void offset(int x, int y) {
         this.x += x;
         this.y += y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Square square = (Square) o;
+
+        if (getX() != square.getX())
+            return false;
+        return getY() == square.getY();
+
+    }
+
+    @Override
+    public String toString() {
+        return "Square{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getX();
+        result = 31 * result + getY();
+        return result;
+    }
+
+    @Override
+    public int compareTo(Square o) {
+        return (x == o.getX()) ? (y - o.getY()) : (x - o.getX());
     }
 }

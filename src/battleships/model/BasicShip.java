@@ -33,17 +33,20 @@ public class BasicShip implements Ship {
     @Override
     public void addSquare(int x, int y) {
         Square newSquare = new Square(x, y);
+        addSquare(newSquare);
+    }
 
-        shipSquares.add(newSquare);
+    @Override
+    public void addSquare(Square sqr) {
+        shipSquares.add(sqr);
 
-        if (x > bottomRight.getX()) {
-            bottomRight.offset(x - bottomRight.getX(), 0);
+        if (sqr.getX() > bottomRight.getX()) {
+            bottomRight.offset(sqr.getX() - bottomRight.getX(), 0);
         }
 
-        if (y >= bottomRight.getY()) {
-            bottomRight.offset(0, y - bottomRight.getY());
+        if (sqr.getY() > bottomRight.getY()) {
+            bottomRight.offset(0, sqr.getY() - bottomRight.getY());
         }
-
     }
 
     @Override
@@ -61,7 +64,7 @@ public class BasicShip implements Ship {
 
     @Override
     public void normalize() {
-        int minX = 0, minY = 0;
+        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
         for (Square sqr : shipSquares) {
             minX = Math.min(minX, sqr.getX());
             minY = Math.min(minY, sqr.getY());
