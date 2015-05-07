@@ -19,10 +19,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Javadoc documentation here
+ * Test class for {@code BasicShip}
  *
  * @author Shen Yichen <2007.yichen@gmail.com>
- * @since v
+ * @see BasicShip
+ * @since v1.0.0
  */
 public class BasicShipTest {
     private BasicShip ship;
@@ -57,7 +58,7 @@ public class BasicShipTest {
         Collections.sort(expected);
 
         assertThat(results, is(expected));
-        assertEquals(new Square(8,5), ship.getBottomRight());
+        assertEquals(new Square(8, 5), ship.getBottomRight());
     }
 
     @Test
@@ -71,8 +72,6 @@ public class BasicShipTest {
         Collections.sort(expected);
 
         assertThat(results, is(expected));
-        assertEquals(new Square(5,6), ship.getBottomRight());
+        assertEquals(new Square(5, 6), ship.getBottomRight());
     }
-
-
 }

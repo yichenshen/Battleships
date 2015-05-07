@@ -29,7 +29,7 @@ public class IndependentBoard implements Board {
     /**
      * States of a square on the board.
      */
-    public static enum SquareState {
+    public enum SquareState {
         /**
          * When square is open and untouched.
          */
@@ -43,14 +43,43 @@ public class IndependentBoard implements Board {
          */
         HIT,
         /**
-         * When the sqaure is occupied by a sunken ship.
+         * When the square is occupied by a sunken ship.
          */
         SUNK
     }
 
+    // <editor-fold desc="Class variables">
+    /**
+     * For storing the state of the board.
+     */
     private SquareState[][] board;
-    private List<Ship> ships;
-    private SortedMap<Integer, List<Square>> possibleShipConfigs;
+    /**
+     * Stores the list of ships.
+     */
+    private Collection<Ship> ships;
+    /**
+     * Stores the possible configurations of all ships.
+     * <p>
+     * Each configuration is given an incremental ID.
+     */
+    private SortedMap<Integer, Collection<Square>> possibleShipConfigs;
+    /**
+     * Stores a link from a sqaure to a configuration that affects it.
+     */
+    private ArrayList<ArrayList<Collection<Integer>>> reverseMap;
+    /**
+     * Stores a link from ship to configurations involving it.
+     */
+    private Map<Ship, Collection<Integer>> shipToConfigID;
+    /**
+     * Stores boards of possible configurations on each square, one for each ship.
+     */
+    private Map<Ship, Integer[][]> shipCounter;
+    /**
+     * Stores the total number of configurations for each ship.
+     */
+    private Map<Ship, Integer> totalCounter;
+    // </editor-fold>
 
     /**
      * Creates a board with given width and height.
@@ -62,13 +91,24 @@ public class IndependentBoard implements Board {
         if (width <= 0 || height <= 0) {
             throw new IllegalArgumentException("Board width/height must be bigger than 0!");
         }
+
         board = new SquareState[width][];
+        reverseMap = new ArrayList<>(width);
+        shipToConfigID = new HashMap<>();
+
         for (int i = 0; i < board.length; i++) {
             board[i] = new SquareState[height];
+            reverseMap.add(new ArrayList<>(height));
+
             for (int j = 0; j < board[i].length; j++) {
                 board[i][j] = SquareState.OPEN;
+                //Using array to store reverse mapping indices, change implementation here
+                reverseMap.get(i).add(new ArrayList<>());
             }
         }
+
+        shipCounter = new HashMap<>();
+        totalCounter = new HashMap<>();
 
         ships = new ArrayList<>();
         possibleShipConfigs = new TreeMap<>();
@@ -85,6 +125,15 @@ public class IndependentBoard implements Board {
         return board[0].length;
     }
 
+    /**
+     * Gets the probability map for all ships on this board.
+     * <p>
+     * Each square on the board is given a probability that any ship may occupy that square.
+     * <p>
+     * Warning: Overall probabilities calculated by this board is linear, and are not exact!
+     *
+     * @return Probability map
+     */
     @Override
     public double[][] getProbabilityMap() {
         return new double[0][];
@@ -108,14 +157,31 @@ public class IndependentBoard implements Board {
     @Override
     public void addShip(Ship ship) {
         ships.add(ship);
+        shipCounter.put(ship, new Integer[getWidth()][getHeight()]);
+        totalCounter.put(ship, 0);
         genMap(ship);
     }
 
     @Override
     public Collection<Ship> getShips() {
-        return null;
+        return new ArrayList<>(ships);
     }
 
+    /**
+     * Generates mapping for a given ship.
+     * <p>
+     * This method adds 3 mappings.
+     * <p>
+     * One giving an incremental index to a fitted configuration coordinate list.
+     * <p>
+     * One matching squares that are affected by this configuration to the index.
+     * <p>
+     * And one that matches ships to the index.
+     * <p>
+     * Make sure {@code shipCounter} and {@code totalCounter} are initialize for the ship before calling.
+     *
+     * @param ship Ship to generate mapping for.
+     */
     private void genMap(Ship ship) {
         Square shipSize = ship.getBottomRight();
 
@@ -132,19 +198,27 @@ public class IndependentBoard implements Board {
                     //TODO Consider cases besides OPEN
                     fits &= board[checkX][checkY] == SquareState.OPEN;
                 }
+
                 //Add to config list if config is a valid fit
-                //TODO add to count matrix
-                //TODO set up reverse and ship reference maps
                 if (fits) {
                     int newKey = possibleShipConfigs.lastKey() + 1;
-                    List<Square> coords = new ArrayList<>(ship.numSquares());
+                    Collection<Square> coords = new ArrayList<>(ship.numSquares());
+
                     for (Square square : ship) {
                         int checkX = x + square.getX();
                         int checkY = y + square.getY();
 
+                        //Add coords to list
                         coords.add(new Square(checkX, checkY));
+                        //Reverse Map
+                        reverseMap.get(checkX).get(checkY).add(newKey);
+                        //Add to square count
+                        shipCounter.get(ship)[checkX][checkY]++;
                     }
+
                     possibleShipConfigs.put(newKey, coords);
+                    shipToConfigID.get(ship).add(newKey);
+                    totalCounter.put(ship, totalCounter.get(ship) + 1);
                 }
             }
         }
