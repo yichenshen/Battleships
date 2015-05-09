@@ -64,7 +64,7 @@ public class IndependentBoard implements Board {
      */
     private SortedMap<Integer, Collection<Square>> possibleShipConfigs;
     /**
-     * Stores a link from a sqaure to a configuration that affects it.
+     * Stores a link from a square to a configuration that affects it.
      */
     private ArrayList<ArrayList<Collection<Integer>>> reverseMap;
     /**
@@ -194,6 +194,87 @@ public class IndependentBoard implements Board {
         return new ArrayList<>(ships);
     }
 
+    @Override
+    public boolean shipWithinBoard(Ship ship, int x, int y) {
+        return x < 0 || x > getWidth() - ship.getBottomRight().getX()
+                || y < 0 || y > getHeight() - ship.getBottomRight().getY();
+    }
+
+    @Override
+    public boolean shipWithinBoard(Ship ship, Square sqr) {
+        return shipWithinBoard(ship, sqr.getX(), sqr.getY());
+    }
+
+    /**
+     * Adds a new configuration to the map, using the squares on ship.
+     * <p>
+     * This method will use the key supplied as the configuration identifier, but will throw an {@code
+     * IllegalArgumentException} if the key is already present in the mappings.
+     *
+     * @param ship The ship for the config
+     * @param key  The key to identify the config
+     * @param x    The starting x position of the config
+     * @param y    The starting y position of the config
+     */
+    void addConfig(Ship ship, int key, int x, int y) {
+        if (possibleShipConfigs.containsKey(key)) {
+            throw new IllegalArgumentException("Config key supplied already exists! key: " + key);
+        }
+
+        //Check if ship is within board
+        if (shipWithinBoard(ship, x, y)) {
+            throw new IllegalArgumentException(String.format(
+                    "Ship is not contained within board!\n(x, y): (%d, %d)\nAccepted Range => x: [0, %d], y: [0, %d]",
+                    x,
+                    y,
+                    getWidth() - ship.getBottomRight().getX(),
+                    getHeight() - ship.getBottomRight().getY()));
+        }
+
+        Collection<Square> coords = new ArrayList<>(ship.numSquares());
+
+        for (Square square : ship) {
+            int checkX = x + square.getX();
+            int checkY = y + square.getY();
+
+            //Add coords to list
+            coords.add(new Square(checkX, checkY));
+            //Reverse Map
+            reverseMap.get(checkX).get(checkY).add(key);
+            //Add to square count
+            shipCounter.get(ship)[checkX][checkY]++;
+        }
+
+        possibleShipConfigs.put(key, coords);
+        shipToConfigID.get(ship).add(key);
+        totalCounter.put(ship, totalCounter.get(ship) + 1);
+    }
+
+    /**
+     * Check if the ship could fit onto the board starting at the specified position, without interference from
+     * obstacles.
+     *
+     * @param ship The ship
+     * @param x    The starting x-position
+     * @param y    The starting y-position
+     * @return {@code true} if the ship can fit, {@code false} if the ship cannot fit
+     */
+    boolean checkConfig(Ship ship, int x, int y) {
+        boolean fits = shipWithinBoard(ship, x, y);
+
+        if (fits) {
+            for (Square square : ship) {
+                int checkX = x + square.getX();
+                int checkY = y + square.getY();
+
+                //TODO Consider cases besides OPEN
+                fits &= board[checkX][checkY] == SquareState.OPEN;
+            }
+        }
+
+        return fits;
+    }
+
     /**
      * Generates mapping for a given ship.
      * <p>
@@ -215,37 +296,10 @@ public class IndependentBoard implements Board {
         for (int x = 0; x < board.length - shipSize.getX() + 1; x++) {
             SquareState[] col = board[x];
             for (int y = 0; y < col.length - shipSize.getY() + 1; y++) {
-                //Try each config
                 //TODO account for rotation
-                boolean fits = true;
-                for (Square square : ship) {
-                    int checkX = x + square.getX();
-                    int checkY = y + square.getY();
-
-                    //TODO Consider cases besides OPEN
-                    fits &= board[checkX][checkY] == SquareState.OPEN;
-                }
-
-                //Add to config list if config is a valid fit
-                if (fits) {
-                    int newKey = possibleShipConfigs.lastKey() + 1;
-                    Collection<Square> coords = new ArrayList<>(ship.numSquares());
-
-                    for (Square square : ship) {
-                        int checkX = x + square.getX();
-                        int checkY = y + square.getY();
-
-                        //Add coords to list
-                        coords.add(new Square(checkX, checkY));
-                        //Reverse Map
-                        reverseMap.get(checkX).get(checkY).add(newKey);
-                        //Add to square count
-                        shipCounter.get(ship)[checkX][checkY]++;
-                    }
-
-                    possibleShipConfigs.put(newKey, coords);
-                    shipToConfigID.get(ship).add(newKey);
-                    totalCounter.put(ship, totalCounter.get(ship) + 1);
+                //Try each config and add to config list if config is a valid fit
+                if (checkConfig(ship, x, y)) {
+                    addConfig(ship, possibleShipConfigs.lastKey() + 1, x, y);
                 }
             }
         }

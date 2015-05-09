@@ -76,4 +76,23 @@ public interface Board {
      * @return List of ships
      */
     Collection<Ship> getShips();
+
+    /**
+     * Checks if the ship could fit into the board at specified position.
+     *
+     * @param ship The ship
+     * @param x    Starting x-position
+     * @param y    Starting y-position
+     * @return {@code true} if the ship fits, {@code false} if the ship extends of out of the board
+     */
+    boolean shipWithinBoard(Ship ship, int x, int y);
+
+    /**
+     * Checks if the ship could fit into the board at specified position.
+     *
+     * @param ship The ship
+     * @param sqr  The starting position
+     * @return {@code true} if the ship fits, {@code false} if the ship extends of out of the board
+     */
+    boolean shipWithinBoard(Ship ship, Square sqr);
 }

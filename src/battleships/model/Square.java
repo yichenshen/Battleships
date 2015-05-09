@@ -74,10 +74,7 @@ public class Square implements Comparable<Square> {
 
         Square square = (Square) o;
 
-        if (getX() != square.getX())
-            return false;
-        return getY() == square.getY();
-
+        return getX() == square.getX() && getY() == square.getY();
     }
 
     @Override
