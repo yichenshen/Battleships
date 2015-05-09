@@ -30,30 +30,30 @@ public interface Board {
     int getHeight();
 
     /**
-     * Gets the probability map for all ships on this board.
+     * Gets the probability matrix for all ships on this board.
      * <p>
      * Each square on the board is given a probability that any ship may occupy that square.
      *
-     * @return Probability map
+     * @return Probability matrix
      */
-    double[][] getProbabilityMap();
+    double[][] getProbabilityMatrix();
 
     /**
-     * Gets the probability map for a single ship on this board.
+     * Gets the probability matrix for a single ship on this board.
      * <p>
      * Each square on the board is given a probability that the ship provided may occupy that square.
      *
-     * @param ship Ship to get map for
-     * @return Probability Map
+     * @param ship Ship to get matrix for
+     * @return Probability matrix
      */
-    double[][] getProbabilityMap(Ship ship);
+    double[][] getProbabilityMatrix(Ship ship);
 
     /**
-     * Returns the map showing number of possible ship placements for each square.
+     * Returns the matrix showing number of possible ship placements for each square.
      *
-     * @return The ship placement map
+     * @return The ship placement matrix
      */
-    int[][] getShipsMap();
+    int[][] getShipsMatrix();
 
     /**
      * Returns the map showing number of possible ship placements for each square, for the given ship.
@@ -61,7 +61,7 @@ public interface Board {
      * @param ship Ship to get map for
      * @return The ship placement map
      */
-    int[][] getShipsMap(Ship ship);
+    int[][] getShipsMatrix(Ship ship);
 
     /**
      * Adds a ship to the board.
