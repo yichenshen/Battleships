@@ -36,7 +36,7 @@ public interface Board {
      *
      * @return Probability matrix
      */
-    double[][] getProbabilityMatrix();
+    Double[][] getProbabilityMatrix();
 
     /**
      * Gets the probability matrix for a single ship on this board.
@@ -46,14 +46,14 @@ public interface Board {
      * @param ship Ship to get matrix for
      * @return Probability matrix
      */
-    double[][] getProbabilityMatrix(Ship ship);
+    Double[][] getProbabilityMatrix(Ship ship);
 
     /**
      * Returns the matrix showing number of possible ship placements for each square.
      *
      * @return The ship placement matrix
      */
-    int[][] getShipsMatrix();
+    Integer[][] getShipsMatrix();
 
     /**
      * Returns the map showing number of possible ship placements for each square, for the given ship.
@@ -61,7 +61,7 @@ public interface Board {
      * @param ship Ship to get map for
      * @return The ship placement map
      */
-    int[][] getShipsMatrix(Ship ship);
+    Integer[][] getShipsMatrix(Ship ship);
 
     /**
      * Adds a ship to the board.

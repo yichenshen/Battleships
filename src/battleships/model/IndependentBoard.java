@@ -137,46 +137,48 @@ public class IndependentBoard implements Board {
      * @see #getShipsMatrix()
      */
     @Override
-    public double[][] getProbabilityMatrix() {
-        return new double[0][];
+    public Double[][] getProbabilityMatrix() {
+        Double[][] summedProbMatrix = new Double[getWidth()][getHeight()];
+
+        for (Ship ship : ships) {
+            boardMapper(summedProbMatrix,
+                    ship,
+                    (int newVal, Double orgVal, int total) -> {
+                        double newProb = (double) newVal / total;
+                        return orgVal + newProb - orgVal * newProb;
+                    });
+        }
+        //P(A or B) = P(A) + P(B) - P(A and B)
+        //P(A and B) = P(A)P(B) as we are assuming they are independent
+
+        return summedProbMatrix;
     }
 
     @Override
-    public double[][] getProbabilityMatrix(Ship ship) {
-        return new double[0][];
+    public Double[][] getProbabilityMatrix(Ship ship) {
+        Double[][] probMatrix = new Double[getWidth()][getHeight()];
+
+        boardMapper(probMatrix, ship, (int newVal, Double orgVal, int total) -> ((double) newVal) / total);
+
+        return probMatrix;
     }
 
     @Override
-    public int[][] getShipsMatrix() {
-        int[][] sumMatrix = new int[getWidth()][getHeight()];
+    public Integer[][] getShipsMatrix() {
+        Integer[][] sumMatrix = new Integer[getWidth()][getHeight()];
 
-        for (Ship s : ships) {
-            Integer[][] shipMatrix = shipCounter.get(s);
-
-            for (int i = 0; i < shipMatrix.length; i++) {
-                Integer[] col = shipMatrix[i];
-
-                for (int j = 0; j < col.length; j++) {
-                    sumMatrix[i][j] += col[j];
-                }
-            }
+        for (Ship ship : ships) {
+            boardMapper(sumMatrix, ship, (int newVal, Integer orgVal, int total) -> orgVal + newVal);
         }
 
         return sumMatrix;
     }
 
     @Override
-    public int[][] getShipsMatrix(Ship ship) {
-        Integer[][] shipMatrix = shipCounter.get(ship);
-        int[][] copyMatrix = new int[getWidth()][getHeight()];
+    public Integer[][] getShipsMatrix(Ship ship) {
+        Integer[][] copyMatrix = new Integer[getWidth()][getHeight()];
 
-        for (int i = 0; i < shipMatrix.length; i++) {
-            Integer[] col = shipMatrix[i];
-
-            for (int j = 0; j < col.length; j++) {
-                copyMatrix[i][j] = col[j];
-            }
-        }
+        boardMapper(copyMatrix, ship, (int newVal, Integer orgVal, int total) -> newVal);
 
         return copyMatrix;
     }
@@ -203,6 +205,55 @@ public class IndependentBoard implements Board {
     @Override
     public boolean shipWithinBoard(Ship ship, Square sqr) {
         return shipWithinBoard(ship, sqr.getX(), sqr.getY());
+    }
+
+    /**
+     * Check if the ship could fit onto the board starting at the specified position, without interference from
+     * obstacles.
+     *
+     * @param ship The ship
+     * @param x    The starting x-position
+     * @param y    The starting y-position
+     * @return {@code true} if the ship can fit, {@code false} if the ship cannot fit
+     */
+    protected boolean checkConfig(Ship ship, int x, int y) {
+        boolean fits = shipWithinBoard(ship, x, y);
+
+        if (fits) {
+            for (Square square : ship) {
+                int checkX = x + square.getX();
+                int checkY = y + square.getY();
+
+                //TODO Consider cases besides OPEN
+                fits &= board[checkX][checkY] == SquareState.OPEN;
+            }
+        }
+
+        return fits;
+    }
+
+    /**
+     * Maps ship count values to a computed value stored in resultMatrix.
+     * <p>
+     * This method takes in an matrix and loops through each of the cells of the board, setting the value of the
+     * provided matrix with the return value of the function provided.
+     *
+     * @param resultMatrix Matrix to operate on (must be the same size as the board!)
+     * @param ship         The ship to map for
+     * @param folder       Function that takes in (boardCellData, originalMatrixData, shipTotalCount) and returns a new
+     *                     value to assign to the matrix.
+     * @param <T>          The data type of the matrix cells
+     */
+    protected <T> void boardMapper(T[][] resultMatrix, Ship ship, ShipFold<T> folder) {
+        Integer[][] shipMatrix = shipCounter.get(ship);
+
+        for (int i = 0; i < shipMatrix.length; i++) {
+            Integer[] col = shipMatrix[i];
+
+            for (int j = 0; j < col.length; j++) {
+                resultMatrix[i][j] = folder.fold(col[j], resultMatrix[i][j], totalCounter.get(ship));
+            }
+        }
     }
 
     /**
@@ -251,31 +302,6 @@ public class IndependentBoard implements Board {
     }
 
     /**
-     * Check if the ship could fit onto the board starting at the specified position, without interference from
-     * obstacles.
-     *
-     * @param ship The ship
-     * @param x    The starting x-position
-     * @param y    The starting y-position
-     * @return {@code true} if the ship can fit, {@code false} if the ship cannot fit
-     */
-    boolean checkConfig(Ship ship, int x, int y) {
-        boolean fits = shipWithinBoard(ship, x, y);
-
-        if (fits) {
-            for (Square square : ship) {
-                int checkX = x + square.getX();
-                int checkY = y + square.getY();
-
-                //TODO Consider cases besides OPEN
-                fits &= board[checkX][checkY] == SquareState.OPEN;
-            }
-        }
-
-        return fits;
-    }
-
-    /**
      * Generates mapping for a given ship.
      * <p>
      * This method adds 3 mappings.
@@ -303,5 +329,15 @@ public class IndependentBoard implements Board {
                 }
             }
         }
+    }
+
+    /**
+     * Functional interface for collating output matrices.
+     *
+     * @param <T> The type of an output matrix cell
+     */
+    @FunctionalInterface
+    interface ShipFold<T> {
+        T fold(int nextVal, T retVal, int divisor);
     }
 }
