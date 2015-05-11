@@ -186,8 +186,16 @@ public class IndependentBoard implements Board {
     @Override
     public void addShip(Ship ship) {
         ships.add(ship);
-        shipCounter.put(ship, new Integer[getWidth()][getHeight()]);
+
+        Integer[][] counterMatrix = new Integer[getWidth()][getHeight()];
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
+                counterMatrix[i][j] = 0;
+            }
+        }
+        shipCounter.put(ship, counterMatrix);
         totalCounter.put(ship, 0);
+        shipToConfigID.put(ship, new ArrayList<>());
         genMap(ship);
     }
 
@@ -198,8 +206,8 @@ public class IndependentBoard implements Board {
 
     @Override
     public boolean shipWithinBoard(Ship ship, int x, int y) {
-        return x < 0 || x > getWidth() - ship.getMaxSquare().getX()
-                || y < 0 || y > getHeight() - ship.getMaxSquare().getY();
+        return x >= 0 && x < getWidth() - ship.getMaxSquare().getX()
+                && y >= 0 && y < getHeight() - ship.getMaxSquare().getY();
     }
 
     @Override
@@ -280,7 +288,7 @@ public class IndependentBoard implements Board {
         }
 
         //Check if ship is within board
-        if (shipWithinBoard(shipRotated, x, y)) {
+        if (!shipWithinBoard(shipRotated, x, y)) {
             throw new IllegalArgumentException(String.format(
                     "Ship is not contained within board!\n(x, y): (%d, %d)\nAccepted Range => x: [0, %d], y: [0, %d]",
                     x,
@@ -334,7 +342,13 @@ public class IndependentBoard implements Board {
                 for (int y = 0; y < col.length - shipSize.getY() + 1; y++) {
                     //Try each config and add to config list if config is a valid fit
                     if (checkConfig(rotatedShip, x, y)) {
-                        addConfig(ship, rotatedShip, possibleShipConfigs.lastKey() + 1, x, y);
+                        int newKey;
+                        if (possibleShipConfigs.isEmpty()) {
+                            newKey = 1;
+                        } else {
+                            newKey = possibleShipConfigs.lastKey() + 1;
+                        }
+                        addConfig(ship, rotatedShip, newKey, x, y);
                     }
                 }
             }

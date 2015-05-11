@@ -56,7 +56,7 @@ public interface Ship extends Iterable<Square> {
     /**
      * Returns the maximum square of the rectangle containing the ship.
      * <p>
-     * When used after normalize, gives the length and breadth of the ship.
+     * When used after normalize, gives the length and breadth of the ship minus 1.
      *
      * @return The maximum square.
      */
