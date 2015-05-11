@@ -5,6 +5,7 @@
 
 package battleships.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -27,7 +28,7 @@ public class BasicShip implements Ship {
      */
     public BasicShip() {
         shipSquares = new TreeSet<>();
-        bottomRight = new Square(0, 0);
+        bottomRight = new Square(Integer.MIN_VALUE, Integer.MIN_VALUE);
     }
 
     @Override
@@ -74,13 +75,32 @@ public class BasicShip implements Ship {
     }
 
     @Override
-    public Square getBottomRight() {
+    public Square getMaxSquare() {
         return new Square(bottomRight);
+    }
+
+    @Override
+    public Ship rotateCWNinety(int repeat) {
+        repeat %= 4;
+
+        ArrayList<Square> squareList = new ArrayList<>(shipSquares.size());
+        for (Square sqr : this) {
+            squareList.add(new Square(sqr));
+        }
+
+        for (int i = 0; i < repeat; i++) {
+            squareList.forEach(battleships.model.Square::rotateCW);
+        }
+
+        Ship rotatedShip = new BasicShip();
+        squareList.forEach(rotatedShip::addSquare);
+        rotatedShip.normalize();
+
+        return rotatedShip;
     }
 
     @Override
     public Iterator<Square> iterator() {
         return shipSquares.iterator();
     }
-
 }

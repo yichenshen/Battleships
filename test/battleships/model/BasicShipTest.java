@@ -44,7 +44,7 @@ public class BasicShipTest {
 
     @Test
     public void testBottomRight() throws Exception {
-        assertEquals(new Square(6, 7), ship.getBottomRight());
+        assertEquals(new Square(6, 7), ship.getMaxSquare());
     }
 
     @Test
@@ -58,7 +58,7 @@ public class BasicShipTest {
         Collections.sort(expected);
 
         assertThat(results, is(expected));
-        assertEquals(new Square(8, 5), ship.getBottomRight());
+        assertEquals(new Square(8, 5), ship.getMaxSquare());
     }
 
     @Test
@@ -72,6 +72,20 @@ public class BasicShipTest {
         Collections.sort(expected);
 
         assertThat(results, is(expected));
-        assertEquals(new Square(5, 6), ship.getBottomRight());
+        assertEquals(new Square(5, 6), ship.getMaxSquare());
+    }
+
+    @Test
+    public void testRotateCW() throws Exception {
+        Ship rotatedShip = ship.rotateCWNinety(1);
+
+        List<Square> results = new ArrayList<>();
+        rotatedShip.iterator().forEachRemaining(results::add);
+
+        List<Square> expected = Arrays.asList(new Square(2, 2), new Square(0, 0), new Square(6, 5));
+        Collections.sort(expected);
+
+        assertThat(results, is(expected));
+        assertEquals(new Square(6, 5), rotatedShip.getMaxSquare());
     }
 }

@@ -54,11 +54,22 @@ public interface Ship extends Iterable<Square> {
     void normalize();
 
     /**
-     * Returns the bottom right position of the rectangle containing the ship.
+     * Returns the maximum square of the rectangle containing the ship.
      * <p>
      * When used after normalize, gives the length and breadth of the ship.
      *
-     * @return The bottom right square.
+     * @return The maximum square.
      */
-    Square getBottomRight();
+    Square getMaxSquare();
+
+    /**
+     * Returns a new ship, that is this ship rotated 90 degrees clockwise times the number of time specified.
+     * <p>
+     * Ship is normalized after rotation.
+     *
+     * @param repeat Number of times to rotate 90 degrees
+     * @return The new rotated ship
+     * @see #normalize()
+     */
+    Ship rotateCWNinety(int repeat);
 }

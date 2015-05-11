@@ -198,8 +198,8 @@ public class IndependentBoard implements Board {
 
     @Override
     public boolean shipWithinBoard(Ship ship, int x, int y) {
-        return x < 0 || x > getWidth() - ship.getBottomRight().getX()
-                || y < 0 || y > getHeight() - ship.getBottomRight().getY();
+        return x < 0 || x > getWidth() - ship.getMaxSquare().getX()
+                || y < 0 || y > getHeight() - ship.getMaxSquare().getY();
     }
 
     @Override
@@ -224,8 +224,8 @@ public class IndependentBoard implements Board {
                 int checkX = x + square.getX();
                 int checkY = y + square.getY();
 
-                //TODO Consider cases besides OPEN
-                fits &= board[checkX][checkY] == SquareState.OPEN;
+                //TODO Consider special case for HIT?
+                fits &= (board[checkX][checkY] == SquareState.OPEN || board[checkX][checkY] == SquareState.HIT);
             }
         }
 
@@ -261,30 +261,37 @@ public class IndependentBoard implements Board {
      * <p>
      * This method will use the key supplied as the configuration identifier, but will throw an {@code
      * IllegalArgumentException} if the key is already present in the mappings.
+     * <p>
+     * You should supply both the original ship, and the ship that has been rotated. The original ship will be used for
+     * mapping and the rotated to set up positions.
      *
-     * @param ship The ship for the config
-     * @param key  The key to identify the config
-     * @param x    The starting x position of the config
-     * @param y    The starting y position of the config
+     * @param orgShip     The ship for mapping
+     * @param shipRotated The ship, rotated for the config
+     * @param key         The key to identify the config
+     * @param x           The starting x position of the config
+     * @param y           The starting y position of the config
      */
-    void addConfig(Ship ship, int key, int x, int y) {
+    void addConfig(Ship orgShip, Ship shipRotated, int key, int x, int y) {
         if (possibleShipConfigs.containsKey(key)) {
             throw new IllegalArgumentException("Config key supplied already exists! key: " + key);
         }
+        if (!ships.contains(orgShip)) {
+            throw new IllegalArgumentException("Unknown original ship supplied");
+        }
 
         //Check if ship is within board
-        if (shipWithinBoard(ship, x, y)) {
+        if (shipWithinBoard(shipRotated, x, y)) {
             throw new IllegalArgumentException(String.format(
                     "Ship is not contained within board!\n(x, y): (%d, %d)\nAccepted Range => x: [0, %d], y: [0, %d]",
                     x,
                     y,
-                    getWidth() - ship.getBottomRight().getX(),
-                    getHeight() - ship.getBottomRight().getY()));
+                    getWidth() - shipRotated.getMaxSquare().getX(),
+                    getHeight() - shipRotated.getMaxSquare().getY()));
         }
 
-        Collection<Square> coords = new ArrayList<>(ship.numSquares());
+        Collection<Square> coords = new ArrayList<>(shipRotated.numSquares());
 
-        for (Square square : ship) {
+        for (Square square : shipRotated) {
             int checkX = x + square.getX();
             int checkY = y + square.getY();
 
@@ -293,12 +300,12 @@ public class IndependentBoard implements Board {
             //Reverse Map
             reverseMap.get(checkX).get(checkY).add(key);
             //Add to square count
-            shipCounter.get(ship)[checkX][checkY]++;
+            shipCounter.get(orgShip)[checkX][checkY]++;
         }
 
         possibleShipConfigs.put(key, coords);
-        shipToConfigID.get(ship).add(key);
-        totalCounter.put(ship, totalCounter.get(ship) + 1);
+        shipToConfigID.get(orgShip).add(key);
+        totalCounter.put(orgShip, totalCounter.get(orgShip) + 1);
     }
 
     /**
@@ -317,17 +324,23 @@ public class IndependentBoard implements Board {
      * @param ship Ship to generate mapping for.
      */
     private void genMap(Ship ship) {
-        Square shipSize = ship.getBottomRight();
+        Ship rotatedShip = ship;
 
-        for (int x = 0; x < board.length - shipSize.getX() + 1; x++) {
-            SquareState[] col = board[x];
-            for (int y = 0; y < col.length - shipSize.getY() + 1; y++) {
-                //TODO account for rotation
-                //Try each config and add to config list if config is a valid fit
-                if (checkConfig(ship, x, y)) {
-                    addConfig(ship, possibleShipConfigs.lastKey() + 1, x, y);
+        for (int i = 0; i < 4; i++) {
+            Square shipSize = rotatedShip.getMaxSquare();
+
+            for (int x = 0; x < board.length - shipSize.getX() + 1; x++) {
+                SquareState[] col = board[x];
+                for (int y = 0; y < col.length - shipSize.getY() + 1; y++) {
+                    //Try each config and add to config list if config is a valid fit
+                    if (checkConfig(rotatedShip, x, y)) {
+                        addConfig(ship, rotatedShip, possibleShipConfigs.lastKey() + 1, x, y);
+                    }
                 }
             }
+
+            //Rotate the ship and try again
+            rotatedShip = rotatedShip.rotateCWNinety(1);
         }
     }
 

@@ -65,6 +65,17 @@ public class Square implements Comparable<Square> {
         this.y += y;
     }
 
+    /**
+     * Rotates the square 90 degrees clockwise.
+     */
+    public void rotateCW() {
+        int oldX = this.x;
+
+        //noinspection SuspiciousNameCombination
+        this.x = this.y;
+        this.y = -1 * oldX;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
