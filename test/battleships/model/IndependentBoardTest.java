@@ -9,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Javadoc documentation here
@@ -33,8 +33,27 @@ public class IndependentBoardTest {
         ship1.addSquare(0, 0);
         ship1.addSquare(0, 1);
         ship1.addSquare(1, 0);
+        ship1.normalize();
+
+        // x x
+        ship2 = new BasicShip();
+        ship2.addSquare(0, 0);
+        ship2.addSquare(0, 1);
+        ship2.normalize();
+
+        // x x
+        // x
+        //     x
+        ship3 = new BasicShip();
+        ship3.addSquare(0, 0);
+        ship3.addSquare(0, 1);
+        ship3.addSquare(1, 0);
+        ship3.addSquare(2, 2);
+        ship3.normalize();
 
         board.addShip(ship1);
+        board.addShip(ship2);
+        board.addShip(ship3);
     }
 
     @After
@@ -48,42 +67,84 @@ public class IndependentBoardTest {
     @Test
     public void testGetProbabilityMatrix() throws Exception {
 
+        double val1 = 3.0 / 16 + 4.0 / 24 - 3.0 / 16 * 4.0 / 24;
+        val1 = val1 + 0.5 - val1 * 0.5;
+
+        double val2 = 6.0 / 16 + 6.0 / 24 - 6.0 / 16 * 6.0 / 24;
+        val2 = val2 + 0.5 - val2 * 0.5;
+
+        double val3 = 12.0 / 16 + 8.0 / 24 - 12.0 / 16 * 8.0 / 24;
+        //center for ship3 is 0
+
+        double[][] expected = {{val1, val2, val1}, {val2, val3, val2}, {val1, val2, val1}};
+
+        assertArrayEquals(expected, board.getProbabilityMatrix());
     }
 
     @Test
     public void testGetProbabilityMatrixForOneShip() throws Exception {
+        Double[][] probMatrix = board.getProbabilityMatrix(ship3);
+        double[][] expected = {{0.5, 0.5, 0.5}, {0.5, 0, 0.5}, {0.5, 0.5, 0.5}};
 
+        assertArrayEquals(expected, probMatrix);
     }
 
     @Test
     public void testGetShipsMatrix() throws Exception {
+        Integer[][] shipsMatrix = board.getShipsMatrix();
+        int[][] expected = {{9, 14, 9}, {14, 20, 14}, {9, 14, 9}};
 
+        assertArrayEquals(expected, shipsMatrix);
     }
 
     @Test
     public void testGetShipsMatrixForOneShip() throws Exception {
-        assertEquals(3, board.getShipsMatrix(ship1)[0][0].intValue());
+        Integer[][] shipMatrix = board.getShipsMatrix(ship1);
+        int[][] expected = {{3, 6, 3}, {6, 12, 6}, {3, 6, 3}};
 
-        assertEquals(12, board.getShipsMatrix(ship1)[1][1].intValue());
+        assertArrayEquals(expected, shipMatrix);
     }
 
     @Test
     public void testShipWithinBoard() throws Exception {
+        Ship testShip = new BasicShip();
 
+        testShip.addSquare(4, 4);
+        testShip.addSquare(5, 5);
+
+        //Remember ship is not normalized
+        assertFalse(board.shipWithinBoard(testShip, 0, 0));
+
+        testShip.normalize();
+        assertTrue(board.shipWithinBoard(testShip, 1, 1));
     }
 
     @Test
     public void testCheckConfig() throws Exception {
-
+        //TODO add this after hit/miss mechanism
     }
 
     @Test
     public void testBoardMapper() throws Exception {
+        Integer[][] iniArray = new Integer[3][3];
 
+        for (int i = 0; i < iniArray.length; i++) {
+            for (int j = 0; j < iniArray[i].length; j++) {
+                iniArray[i][j] = 5;
+            }
+        }
+
+        board.boardMapper(iniArray, ship3, (int newVal, Integer orgVal, int total) -> orgVal * newVal - total);
+
+        int[][] expected = {{6, 6, 6}, {6, -4, 6}, {6, 6, 6}};
+
+        assertArrayEquals(expected, iniArray);
     }
 
     @Test
     public void testAddConfig() throws Exception {
+        board.addConfig(ship1, ship1, -1, 0, 0);
 
+        assertEquals(4, board.getShipsMatrix(ship1)[0][0].intValue());
     }
 }

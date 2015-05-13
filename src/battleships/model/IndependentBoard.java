@@ -140,6 +140,12 @@ public class IndependentBoard implements Board {
     public Double[][] getProbabilityMatrix() {
         Double[][] summedProbMatrix = new Double[getWidth()][getHeight()];
 
+        for (int i = 0; i < summedProbMatrix.length; i++) {
+            for (int j = 0; j < summedProbMatrix[i].length; j++) {
+                summedProbMatrix[i][j] = 0.0;
+            }
+        }
+
         for (Ship ship : ships) {
             boardMapper(summedProbMatrix,
                     ship,
@@ -166,6 +172,12 @@ public class IndependentBoard implements Board {
     @Override
     public Integer[][] getShipsMatrix() {
         Integer[][] sumMatrix = new Integer[getWidth()][getHeight()];
+
+        for (int i = 0; i < sumMatrix.length; i++) {
+            for (int j = 0; j < sumMatrix[i].length; j++) {
+                sumMatrix[i][j] = 0;
+            }
+        }
 
         for (Ship ship : ships) {
             boardMapper(sumMatrix, ship, (int newVal, Integer orgVal, int total) -> orgVal + newVal);
@@ -270,6 +282,9 @@ public class IndependentBoard implements Board {
      * This method will use the key supplied as the configuration identifier, but will throw an {@code
      * IllegalArgumentException} if the key is already present in the mappings.
      * <p>
+     * This method also throws an {@code IllegalArgumentException} if the rotated ship is out of the board, but DOES NOT
+     * check is the config overlaps illegal squares e.g. {@code SquareState.MISS}.
+     * <p>
      * You should supply both the original ship, and the ship that has been rotated. The original ship will be used for
      * mapping and the rotated to set up positions.
      *
@@ -335,11 +350,10 @@ public class IndependentBoard implements Board {
         Ship rotatedShip = ship;
 
         for (int i = 0; i < 4; i++) {
-            Square shipSize = rotatedShip.getMaxSquare();
-
-            for (int x = 0; x < board.length - shipSize.getX() + 1; x++) {
+            //Just consider all, let checkConfig figure out if ship is outside board
+            for (int x = 0; x < board.length; x++) {
                 SquareState[] col = board[x];
-                for (int y = 0; y < col.length - shipSize.getY() + 1; y++) {
+                for (int y = 0; y < col.length; y++) {
                     //Try each config and add to config list if config is a valid fit
                     if (checkConfig(rotatedShip, x, y)) {
                         int newKey;
