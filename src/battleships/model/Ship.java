@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.model;
 
 /**
@@ -10,7 +9,8 @@ package battleships.model;
  * <p>
  * A ship consists of a number of squares.
  * <p>
- * This interface should be able to return an Iterator that iterates through all the ship's squares.
+ * This interface should be able to return an Iterator that iterates through all
+ * the ship's squares.
  *
  * @author Shen Yichen <2007.yichen@gmail.com>
  * @since v1.0.0
@@ -56,14 +56,16 @@ public interface Ship extends Iterable<Square> {
     /**
      * Returns the maximum square of the rectangle containing the ship.
      * <p>
-     * When used after normalize, gives the length and breadth of the ship minus 1.
+     * When used after normalize, gives the length and breadth of the ship minus
+     * 1.
      *
      * @return The maximum square.
      */
     Square getMaxSquare();
 
     /**
-     * Returns a new ship, that is this ship rotated 90 degrees clockwise times the number of time specified.
+     * Returns a new ship, that is this ship rotated 90 degrees clockwise times
+     * the number of time specified.
      * <p>
      * Ship is normalized after rotation.
      *

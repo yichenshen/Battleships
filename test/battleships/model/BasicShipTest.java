@@ -2,21 +2,18 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.model;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import static org.hamcrest.CoreMatchers.is;
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test class for {@code BasicShip}
@@ -26,6 +23,7 @@ import static org.junit.Assert.assertThat;
  * @since v1.0.0
  */
 public class BasicShipTest {
+
     private BasicShip ship;
 
     @Before

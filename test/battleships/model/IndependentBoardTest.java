@@ -2,14 +2,15 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.model;
 
 import org.junit.After;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Javadoc documentation here
@@ -128,9 +129,9 @@ public class IndependentBoardTest {
     public void testBoardMapper() throws Exception {
         Integer[][] iniArray = new Integer[3][3];
 
-        for (int i = 0; i < iniArray.length; i++) {
-            for (int j = 0; j < iniArray[i].length; j++) {
-                iniArray[i][j] = 5;
+        for (Integer[] iniArrayCol : iniArray) {
+            for (int j = 0; j < iniArrayCol.length; j++) {
+                iniArrayCol[j] = 5;
             }
         }
 
@@ -142,6 +143,7 @@ public class IndependentBoardTest {
     }
 
     @Test
+    @SuppressWarnings("UnnecessaryUnboxing")
     public void testAddConfig() throws Exception {
         board.addConfig(ship1, ship1, -1, 0, 0);
 

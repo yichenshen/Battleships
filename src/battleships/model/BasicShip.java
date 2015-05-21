@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.model;
 
 import java.util.ArrayList;
@@ -11,7 +10,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * The model class for a ship on the board that is simply the sum of it's squares.
+ * The model class for a ship on the board that is simply the sum of it's
+ * squares.
  * <p>
  * Squares are stored as a Set of squares with no additional properties.
  *
@@ -20,8 +20,8 @@ import java.util.TreeSet;
  */
 public class BasicShip implements Ship {
 
-    private Set<Square> shipSquares;
-    private Square bottomRight;
+    private final Set<Square> shipSquares;
+    private final Square bottomRight;
 
     /**
      * Creates a new BasicShip with no squares.

@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.model;
 
 /**
@@ -78,10 +77,12 @@ public class Square implements Comparable<Square> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
 
         Square square = (Square) o;
 
@@ -90,10 +91,10 @@ public class Square implements Comparable<Square> {
 
     @Override
     public String toString() {
-        return "Square{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return "Square{"
+                + "x=" + x
+                + ", y=" + y
+                + '}';
     }
 
     @Override
