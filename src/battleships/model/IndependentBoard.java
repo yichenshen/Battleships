@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-
 /**
  * An implementation of Board that calculates probability independently for each
  * {@code Ship}.
@@ -34,29 +33,6 @@ import java.util.TreeMap;
  * @since v1.0.0
  */
 public class IndependentBoard implements Board {
-
-    /**
-     * States of a square on the board.
-     */
-    public enum SquareState {
-
-        /**
-         * When square is open and untouched.
-         */
-        OPEN,
-        /**
-         * When the square is confirmed to be empty.
-         */
-        MISS,
-        /**
-         * When the square is confirmed to be occupied.
-         */
-        HIT,
-        /**
-         * When the square is occupied by a sunken ship.
-         */
-        SUNK
-    }
 
     // <editor-fold desc="Class variables">
     /**

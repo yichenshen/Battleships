@@ -15,6 +15,29 @@ import java.util.Collection;
 public interface Board {
 
     /**
+     * States of a square on the board.
+     */
+    public enum SquareState {
+
+        /**
+         * When square is open and untouched.
+         */
+        OPEN,
+        /**
+         * When the square is confirmed to be empty.
+         */
+        MISS,
+        /**
+         * When the square is confirmed to be occupied.
+         */
+        HIT,
+        /**
+         * When the square is occupied by a sunken ship.
+         */
+        SUNK
+    }
+
+    /**
      * Gets the horizontal size of the board.
      *
      * @return The width of the board.
