@@ -2,12 +2,13 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
+
 package battleships.gui;
 
 /**
  * The main and standard GUI for displaying and calculating probabilities for a
  * game of battleships.
- *
+ * <p>
  * @author Shen Yichen <2007.yichen@gmail.com>
  * @since v1.0.0
  */

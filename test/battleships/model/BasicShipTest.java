@@ -2,6 +2,7 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
+
 package battleships.model;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import org.junit.Test;
 
 /**
  * Test class for {@code BasicShip}
- *
+ * <p>
  * @author Shen Yichen <2007.yichen@gmail.com>
  * @see BasicShip
  * @since v1.0.0

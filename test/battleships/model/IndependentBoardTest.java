@@ -2,6 +2,7 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
+
 package battleships.model;
 
 import org.junit.After;
@@ -13,10 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Javadoc documentation here
- *
+ * Test class for {@code IndependentBoard}.
+ * <p>
  * @author Shen Yichen <2007.yichen@gmail.com>
- * @since v
+ * @since v1.0.0
  */
 public class IndependentBoardTest {
 

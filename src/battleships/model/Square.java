@@ -2,11 +2,12 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
+
 package battleships.model;
 
 /**
  * A basic implementation of a square on the board.
- *
+ * <p>
  * @author Shen Yichen <2007.yichen@gmail.com>
  * @since v1.0.0
  */
@@ -16,7 +17,7 @@ public class Square implements Comparable<Square> {
 
     /**
      * Setter constructor.
-     *
+     * <p>
      * @param x x coordinate
      * @param y y coordinate
      */
@@ -27,7 +28,7 @@ public class Square implements Comparable<Square> {
 
     /**
      * Copy constructor.
-     *
+     * <p>
      * @param sqr The square to be copied
      */
     public Square(Square sqr) {
@@ -37,7 +38,7 @@ public class Square implements Comparable<Square> {
 
     /**
      * Returns the x position of the square.
-     *
+     * <p>
      * @return x-coordinate position
      */
     public int getX() {
@@ -46,7 +47,7 @@ public class Square implements Comparable<Square> {
 
     /**
      * Returns the y position of the square.
-     *
+     * <p>
      * @return y-coordinate position.
      */
     public int getY() {
@@ -55,7 +56,7 @@ public class Square implements Comparable<Square> {
 
     /**
      * Offsets(moves) the position of the square by the given values.
-     *
+     * <p>
      * @param x x-position offset
      * @param y y-position offset
      */

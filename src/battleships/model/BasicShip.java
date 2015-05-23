@@ -2,6 +2,7 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
+
 package battleships.model;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.TreeSet;
  * squares.
  * <p>
  * Squares are stored as a Set of squares with no additional properties.
- *
+ * <p>
  * @author Shen Yichen <2007.yichen@gmail.com>
  * @since v1.0.0
  */
