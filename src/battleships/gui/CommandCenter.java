@@ -29,40 +29,19 @@ public class CommandCenter extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        boardPanel = new javax.swing.JPanel();
         sidePanel = new javax.swing.JPanel();
+        shipDisplayPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         buttonPanel = new javax.swing.JPanel();
         sinkButton = new javax.swing.JButton();
-        shipDisplayPanel = new javax.swing.JPanel();
         shipsListScrollPane = new javax.swing.JScrollPane();
         shipsList = new javax.swing.JList();
+        highSeasBoard = new battleships.gui.HighSeas();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        boardPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Board"));
-
-        javax.swing.GroupLayout boardPanelLayout = new javax.swing.GroupLayout(boardPanel);
-        boardPanel.setLayout(boardPanelLayout);
-        boardPanelLayout.setHorizontalGroup(
-            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 432, Short.MAX_VALUE)
-        );
-        boardPanelLayout.setVerticalGroup(
-            boardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jLabel1.setText("Ships List");
-
-        sinkButton.setFont(new java.awt.Font("Droid Sans", 0, 15)); // NOI18N
-        sinkButton.setText("Sink");
-        sinkButton.setMaximumSize(new java.awt.Dimension(100, 28));
-        sinkButton.setPreferredSize(new java.awt.Dimension(80, 28));
-        buttonPanel.add(sinkButton);
 
         shipDisplayPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Ship"));
 
@@ -76,6 +55,14 @@ public class CommandCenter extends javax.swing.JFrame {
             shipDisplayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 126, Short.MAX_VALUE)
         );
+
+        jLabel1.setText("Ships List");
+
+        sinkButton.setFont(new java.awt.Font("Droid Sans", 0, 15)); // NOI18N
+        sinkButton.setText("Sink");
+        sinkButton.setMaximumSize(new java.awt.Dimension(100, 28));
+        sinkButton.setPreferredSize(new java.awt.Dimension(80, 28));
+        buttonPanel.add(sinkButton);
 
         shipsList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -94,10 +81,11 @@ public class CommandCenter extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(sidePanelLayout.createSequentialGroup()
-                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(shipDisplayPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(shipsListScrollPane))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sidePanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(sidePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(shipsListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                    .addComponent(shipDisplayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         sidePanelLayout.setVerticalGroup(
@@ -110,6 +98,23 @@ public class CommandCenter extends javax.swing.JFrame {
                 .addComponent(shipDisplayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        highSeasBoard.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                highSeasBoardComponentResized(evt);
+            }
+        });
+
+        javax.swing.GroupLayout highSeasBoardLayout = new javax.swing.GroupLayout(highSeasBoard);
+        highSeasBoard.setLayout(highSeasBoardLayout);
+        highSeasBoardLayout.setHorizontalGroup(
+            highSeasBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 437, Short.MAX_VALUE)
+        );
+        highSeasBoardLayout.setVerticalGroup(
+            highSeasBoardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jMenu1.setText("File");
@@ -126,24 +131,28 @@ public class CommandCenter extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(highSeasBoard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sidePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sidePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sidePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(sidePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(highSeasBoard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void highSeasBoardComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_highSeasBoardComponentResized
+        highSeasBoard.refresh();
+    }//GEN-LAST:event_highSeasBoardComponentResized
 
     /**
      * @param args the command line arguments
@@ -173,8 +182,8 @@ public class CommandCenter extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel boardPanel;
     private javax.swing.JPanel buttonPanel;
+    private battleships.gui.HighSeas highSeasBoard;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
