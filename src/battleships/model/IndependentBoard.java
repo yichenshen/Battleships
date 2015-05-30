@@ -39,6 +39,8 @@ import java.util.TreeMap;
  * This allows the totals and probabilities to be recalculated when the state of
  * a square changes without having to regenerate the configurations.
  * <p>
+ * Square coordinates in this class are 0 indexed.
+ * <p>
  * @author Shen Yichen <2007.yichen@gmail.com>
  * @see Ship
  * @since v1.0.0
@@ -232,6 +234,46 @@ public class IndependentBoard implements Board {
         return shipWithinBoard(ship, sqr.getX(), sqr.getY());
     }
 
+    @Override
+    public void stateChange(int x, int y, SquareState newState) {
+
+        if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
+            throw new IllegalArgumentException("Coordinates out-of-bound: (" + x + ", " + y + ")");
+        }
+
+        switch (newState) {
+            case MISS:
+                Collection<Integer> affectedConfig = reverseMap.get(x).get(y);
+
+                affectedConfig.forEach(
+                        (Integer id) -> {
+                            if (configActive.get(id)) {
+                                //Ship of this config
+                                Ship ship = getShipOfConfig(id);
+
+                                configActive.put(id, Boolean.FALSE);
+
+                                Collection<Square> config = possibleShipConfigs.get(id);
+
+                                config.forEach(
+                                        (Square sqr) -> {
+                                            shipCounter.get(ship)[sqr.getX()][sqr.getY()]--;
+                                        }
+                                );
+
+                                //Decrement total configs for ship
+                                totalCounter.put(ship, totalCounter.get(ship) - 1);
+                            }
+                        }
+                );
+
+                break;
+        }
+        //If new state is not to be assigned, an IllegalStateException should be thrown before this.
+        board[x][y] = newState;
+        //TODO add in other states
+    }
+
     /**
      * Check if the ship could fit onto the board starting at the specified
      * position, without interference from obstacles.
@@ -401,6 +443,22 @@ public class IndependentBoard implements Board {
             //Rotate the ship and try again
             rotatedShip = rotatedShip.rotateCWNinety(1);
         }
+    }
+
+    /**
+     *
+     * @param configID
+     * @return
+     */
+    private Ship getShipOfConfig(int configID) {
+        return ships.stream()
+                .filter(
+                        (Ship ship) -> {
+                            return shipToConfigID.get(ship).stream().anyMatch((Integer id) -> id == configID);
+                        }
+                )
+                .findFirst()
+                .orElse(null);
     }
 
     /**

@@ -124,4 +124,21 @@ public interface Board {
      *         of out of the board
      */
     boolean shipWithinBoard(Ship ship, Square sqr);
+
+    /**
+     * Changes the state of a square.
+     * <p>
+     * The state of the square is changed together with the necessary data to
+     * reflect the state change when one of the data matrix methods is called.
+     * <p>
+     * If the new state defined is illegal given the current state of the board,
+     * an {@code IllegalStateException} is thrown.
+     * <p>
+     * @param x        X-coordinate of the square
+     * @param y        Y-coordinate of the square
+     * @param newState The state of the square to change to.
+     * @throws IllegalStateException If the new state is not allowed for the
+     *                               specified square.
+     */
+    void stateChange(int x, int y, SquareState newState);
 }

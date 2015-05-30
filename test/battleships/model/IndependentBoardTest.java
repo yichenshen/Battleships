@@ -123,7 +123,10 @@ public class IndependentBoardTest {
 
     @Test
     public void testCheckConfig() throws Exception {
-        //TODO add this after hit/miss mechanism
+        board.stateChange(0, 0, Board.SquareState.MISS);
+
+        assertFalse(board.checkConfig(ship1, 0, 0));
+        assertTrue(board.checkConfig(ship1.rotateCWNinety(2), 0, 0));
     }
 
     @Test
@@ -149,5 +152,22 @@ public class IndependentBoardTest {
         board.addConfig(ship1, ship1, 0, 0);
 
         assertEquals(4, board.getShipsMatrix(ship1)[0][0].intValue());
+    }
+
+    @Test
+    public void testSquareMiss() throws Exception {
+        board.stateChange(1, 1, Board.SquareState.MISS);
+
+        double val1 = 1.0 / 4 + 4.0 / 16 - 1.0 / 4 * 4.0 / 16;
+        val1 = val1 + 0.5 - val1 * 0.5;
+
+        double val2 = 2.0 / 4 + 4.0 / 16 - 2.0 / 4 * 4.0 / 16;
+        val2 = val2 + 0.5 - val2 * 0.5;
+
+        double val3 = 0;
+
+        double[][] expected = {{val1, val2, val1}, {val2, val3, val2}, {val1, val2, val1}};
+
+        assertArrayEquals(expected, board.getProbabilityMatrix());
     }
 }
