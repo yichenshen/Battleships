@@ -146,7 +146,7 @@ public class IndependentBoardTest {
     @Test
     @SuppressWarnings("UnnecessaryUnboxing")
     public void testAddConfig() throws Exception {
-        board.addConfig(ship1, ship1, -1, 0, 0);
+        board.addConfig(ship1, ship1, 0, 0);
 
         assertEquals(4, board.getShipsMatrix(ship1)[0][0].intValue());
     }
