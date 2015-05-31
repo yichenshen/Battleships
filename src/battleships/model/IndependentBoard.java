@@ -446,9 +446,11 @@ public class IndependentBoard implements Board {
     }
 
     /**
-     *
-     * @param configID
-     * @return
+     * Returns the ship which the configuration as specified by {@code configID}
+     * is related to.
+     * <p>
+     * @param configID The ID of the configuration for matching.
+     * @return The matching ship.
      */
     private Ship getShipOfConfig(int configID) {
         return ships.stream()
