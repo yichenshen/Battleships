@@ -242,7 +242,7 @@ public class IndependentBoard implements Board {
         }
 
         switch (newState) {
-            case MISS:
+            case MISS: {
                 Collection<Integer> affectedConfig = reverseMap.get(x).get(y);
 
                 affectedConfig.forEach(
@@ -268,6 +268,28 @@ public class IndependentBoard implements Board {
                 );
 
                 break;
+            }
+
+            case OPEN: {
+                SquareState oldState = board[x][y];
+
+                switch (oldState) {
+                    case MISS: {
+                        Collection<Integer> affectedConfig = reverseMap.get(x).get(y);
+
+                        affectedConfig.forEach(
+                                (Integer id) -> {
+                                    //TODO continue
+                                }
+                        );
+
+                        break;
+                    }
+
+                }
+
+                break;
+            }
         }
         //If new state is not to be assigned, an IllegalStateException should be thrown before this.
         board[x][y] = newState;
@@ -295,6 +317,31 @@ public class IndependentBoard implements Board {
                 //TODO Consider special case for HIT?
                 fits &= (board[checkX][checkY] == SquareState.OPEN || board[checkX][checkY] == SquareState.HIT);
             }
+        }
+
+        return fits;
+        //TODO define in terms of function below
+    }
+
+    /**
+     * Checks if the given configuration is within the board and is clear of any
+     * obstacles.
+     * <p>
+     * @param config The {@code Iterable} of squares that makes up the
+     *               configuration.
+     * @return {@code true} if the configuration can fit, {@code false} if the
+     *         configuration cannot fit
+     */
+    protected boolean checkConfig(Iterable<Square> config) {
+        boolean fits = false;
+
+        for (Square square : config) {
+            int x = square.getX();
+            int y = square.getY();
+
+            fits &= x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+
+            fits &= (board[x][y] == SquareState.OPEN || board[x][y] == SquareState.HIT);
         }
 
         return fits;
