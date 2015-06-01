@@ -275,15 +275,35 @@ public class IndependentBoard implements Board {
 
                 switch (oldState) {
                     case MISS: {
+                        board[x][y] = newState;
+
                         Collection<Integer> affectedConfig = reverseMap.get(x).get(y);
 
                         affectedConfig.forEach(
                                 (Integer id) -> {
-                                    //TODO continue
+                                    //Ship of this config
+                                    Ship ship = getShipOfConfig(id);
+                                    Collection<Square> config = possibleShipConfigs.get(id);
+
+                                    if (checkConfig(config)) {
+                                        configActive.put(id, Boolean.TRUE);
+
+                                        config.forEach(
+                                                (Square sqr) -> {
+                                                    shipCounter.get(ship)[sqr.getX()][sqr.getY()]++;
+                                                }
+                                        );
+
+                                        totalCounter.put(ship, totalCounter.get(ship) + 1);
+                                    }
                                 }
                         );
 
                         break;
+                        //TODO add other
+                        //Hit: similiar to miss
+                        //Sunk: error
+                        //Open: do nothing
                     }
 
                 }
@@ -292,6 +312,7 @@ public class IndependentBoard implements Board {
             }
         }
         //If new state is not to be assigned, an IllegalStateException should be thrown before this.
+        //TODO after everything is implemented, relook this line
         board[x][y] = newState;
         //TODO add in other states
     }
@@ -333,13 +354,13 @@ public class IndependentBoard implements Board {
      *         configuration cannot fit
      */
     protected boolean checkConfig(Iterable<Square> config) {
-        boolean fits = false;
+        boolean fits = true;
 
         for (Square square : config) {
             int x = square.getX();
             int y = square.getY();
 
-            fits &= x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+            fits &= (x >= 0 && x < getWidth() && y >= 0 && y < getHeight());
 
             fits &= (board[x][y] == SquareState.OPEN || board[x][y] == SquareState.HIT);
         }

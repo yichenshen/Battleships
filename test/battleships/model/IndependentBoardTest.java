@@ -170,4 +170,23 @@ public class IndependentBoardTest {
 
         assertArrayEquals(expected, board.getProbabilityMatrix());
     }
+
+    @Test
+    public void testSquareUnmiss() throws Exception {
+        board.stateChange(1, 1, Board.SquareState.MISS);
+        board.stateChange(1, 1, Board.SquareState.OPEN);
+        
+        //Test case for initial probabilities
+        double val1 = 3.0 / 16 + 4.0 / 24 - 3.0 / 16 * 4.0 / 24;
+        val1 = val1 + 0.5 - val1 * 0.5;
+
+        double val2 = 6.0 / 16 + 6.0 / 24 - 6.0 / 16 * 6.0 / 24;
+        val2 = val2 + 0.5 - val2 * 0.5;
+
+        double val3 = 12.0 / 16 + 8.0 / 24 - 12.0 / 16 * 8.0 / 24;
+
+        double[][] expected = {{val1, val2, val1}, {val2, val3, val2}, {val1, val2, val1}};
+
+        assertArrayEquals(expected, board.getProbabilityMatrix());
+    }
 }
