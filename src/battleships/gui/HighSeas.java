@@ -44,15 +44,39 @@ public class HighSeas extends JPanel {
      * The size of a square on the grid.
      */
     private double sqrSize = MAX_SQUARE_SIZE;
+    private double xOffset = 0;
+    private double yOffset = 0;
     /**
      * The data of the board.
      */
     private double[][] data;
+    private int mouseGridX = -1;
+    private int mouseGridY = -1;
 
     /**
      * Create a new HighSeas Panel.
      */
     public HighSeas() {
+    }
+
+    public int getGridX(double x) {
+        int gridX = (int) (Math.floor(x - xOffset) / sqrSize) - 1;
+
+        if (gridX < 0 || gridX >= cols) {
+            gridX = -1;
+        }
+
+        return gridX;
+    }
+
+    public int getGridY(double y) {
+        int gridY = (int) (Math.floor(y - yOffset) / sqrSize) - 1;
+
+        if (gridY < 0 || gridY >= rows) {
+            gridY = -1;
+        }
+
+        return gridY;
     }
 
     /**
@@ -90,6 +114,27 @@ public class HighSeas extends JPanel {
     }
 
     /**
+     * Sets the position of the mouse on the panel.
+     * <p>
+     * This grid it is hovering over is calculated, thus allowing the row and
+     * column to be highlighted.
+     * <p>
+     * @param x
+     * @param y
+     */
+    public void setMousePos(double x, double y) {
+        int newX = getGridX(x);
+        int newY = getGridY(y);
+
+        if (mouseGridX != newX || mouseGridY != newY) {
+            mouseGridX = newX;
+            mouseGridY = newY;
+
+            refresh();
+        }
+    }
+
+    /**
      * Refreshes the board.
      * <p>
      * This method calculates the the suitable square size based on the current
@@ -97,6 +142,9 @@ public class HighSeas extends JPanel {
      */
     public void refresh() {
         sqrSize = Math.min(MAX_SQUARE_SIZE, Math.min((getWidth() - 1) * 1.0 / (cols + 1), (getHeight() - 1) * 1.0 / (rows + 1)));
+
+        xOffset = (getWidth() - 1 - (cols + 1) * sqrSize) / 2;
+        yOffset = (getHeight() - 1 - (rows + 1) * sqrSize) / 2;
 
         repaint();
     }
@@ -106,24 +154,26 @@ public class HighSeas extends JPanel {
         super.paint(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        
+
         if (data != null) {
             for (int i = 0; i < data.length; i++) {
                 for (int j = 0; j < data[i].length; j++) {
+                    Rectangle2D cell = new Rectangle2D.Double(sqrSize * (i + 1) + xOffset, sqrSize * (j + 1) + yOffset, sqrSize, sqrSize);
 
-                    double xOffset = (getWidth() - 1 - (cols + 1) * sqrSize) / 2;
-                    double yOffset = (getHeight() - 1 - (rows + 1) * sqrSize) / 2;
+                    float brightness = 0.8f;
 
-                    Rectangle2D cell = new Rectangle2D.Double(sqrSize * (i + 1) + xOffset, sqrSize * (j + 1) + yOffset , sqrSize, sqrSize);
+                    if (mouseGridX != -1 && mouseGridY != -1 && (i == mouseGridX ^ j == mouseGridY)) {
+                        brightness = 0.6f;
+                    }
 
-                    g2.setPaint(Color.getHSBColor((float) (1f/3 - Math.pow(data[i][j],1.5)/3), 1f, 0.8f));
+                    g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], 1.5) / 3), 1f, brightness));
+
                     //TODO adjust accordingly
-                    
                     g2.fill(cell);
                 }
             }
         }
-        
+
         g2.setPaint(Color.BLACK);
         g2.setStroke(new BasicStroke(1));
         paintGrid(g2);
@@ -148,9 +198,6 @@ public class HighSeas extends JPanel {
             //Scale font according to space availible
             double fontSize = sqrSize / (maxBound * maxDigits) * g2.getFont().getSize();
             g2.setFont(g2.getFont().deriveFont((float) fontSize));
-
-            double xOffset = (getWidth() - 1 - (cols + 1) * sqrSize) / 2;
-            double yOffset = (getHeight() - 1 - (rows + 1) * sqrSize) / 2;
 
             //Distance to bottom of text to placement position
             double fontLineOffset = g2.getFontMetrics().getMaxDescent() + g2.getFontMetrics().getLeading();
