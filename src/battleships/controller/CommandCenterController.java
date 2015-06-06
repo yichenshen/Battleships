@@ -65,14 +65,36 @@ public class CommandCenterController {
         }
     }
 
+    /**
+     * Gets the number of rows of the board.
+     * <p>
+     * @return The number of rows
+     */
     public int getBoardHeight() {
         return board.getHeight();
     }
 
+    /**
+     * Gets the number of columns of the board.
+     * <p>
+     * @return The number of columns
+     */
     public int getBoardWidth() {
         return board.getWidth();
     }
 
+    /**
+     * Returns the data to be shown on the display panel.
+     * <p>
+     * A 2D array is returned, with each element being a number from 0 to 1.
+     * Depending on the settings, the data may represent different things.
+     * <p>
+     * For calculations using total number of ship configurations, each element
+     * is the number of configurations normalised from 0 to 1 based on the
+     * highest number of configurations in the matrix.
+     * <p>
+     * @return The numerical data to display
+     */
     public double[][] getData() {
         Integer[][] raw = board.getShipsMatrix();
 

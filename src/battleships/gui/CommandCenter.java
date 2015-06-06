@@ -15,7 +15,10 @@ import battleships.controller.CommandCenterController;
  * @since v1.0.0
  */
 public class CommandCenter extends javax.swing.JFrame {
-    
+
+    /**
+     * The controller for this GUI
+     */
     private final CommandCenterController controller;
 
     /**
@@ -24,9 +27,9 @@ public class CommandCenter extends javax.swing.JFrame {
     public CommandCenter() {
         controller = new CommandCenterController();
         initComponents();
-        
+
         highSeasBoard.setSquares(controller.getBoardWidth(), controller.getBoardHeight());
-        
+
         highSeasBoard.setData(controller.getData());
     }
 
