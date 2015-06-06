@@ -73,6 +73,27 @@ public class CommandCenterController {
         return board.getWidth();
     }
 
+    public double[][] getData() {
+        Integer[][] raw = board.getShipsMatrix();
+
+        int max = 0;
+
+        for (Integer[] col : raw) {
+            for (Integer cell : col) {
+                max = Math.max(cell, max);
+            }
+        }
+
+        double[][] returnData = new double[board.getWidth()][board.getHeight()];
+
+        for (int i = 0; i < returnData.length; i++) {
+            for (int j = 0; j < returnData[i].length; j++) {
+                returnData[i][j] = raw[i][j] * 1.0 / max;
+            }
+        }
+
+        return returnData;
+        //Use a cache for results
+    }
     //TODO implment the rest of the methods
-    //Use a cache for results
 }

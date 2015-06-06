@@ -86,6 +86,15 @@ public class HighSeas extends JPanel {
 
         Graphics2D g2 = (Graphics2D) g;
 
+        paintGrid(g2);
+    }
+
+    /**
+     * Draws a grid based on rows and columns on the panel.
+     * <p>
+     * @param g2 The graphics object to use for drawing.
+     */
+    private void paintGrid(Graphics2D g2) {
         if (cols > 0 && rows > 0) {
             //Calculates number of digits
             int maxDigits = (int) Math.max(Math.floor(Math.log10(cols)) + 1, Math.floor(Math.log(rows - 1) / Math.log(26) + 1));
