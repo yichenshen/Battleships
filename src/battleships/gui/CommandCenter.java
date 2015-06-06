@@ -16,7 +16,7 @@ import battleships.controller.CommandCenterController;
  */
 public class CommandCenter extends javax.swing.JFrame {
     
-    private CommandCenterController controller;
+    private final CommandCenterController controller;
 
     /**
      * Creates new form CommandCenter
@@ -26,6 +26,8 @@ public class CommandCenter extends javax.swing.JFrame {
         initComponents();
         
         highSeasBoard.setSquares(controller.getBoardWidth(), controller.getBoardHeight());
+        
+        highSeasBoard.setData(controller.getData());
     }
 
     /**

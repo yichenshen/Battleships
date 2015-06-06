@@ -5,9 +5,14 @@
 
 package battleships.gui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Stroke;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 
 /**
@@ -41,6 +46,10 @@ public class HighSeas extends JPanel {
      * The size of a square on the grid.
      */
     private double sqrSize = MAX_SQUARE_SIZE;
+    /**
+     * The data of the board.
+     */
+    private double[][] data;
 
     /**
      * Create a new HighSeas Panel.
@@ -69,6 +78,20 @@ public class HighSeas extends JPanel {
     }
 
     /**
+     * Sets the given array as the data array for the panel.
+     * <p>
+     * The data array is used to determine the colouring of cells on the panel.
+     * <p>
+     * Note: This method does not make a copy of the array, and thus the array
+     * may be modified else where.
+     * <p>
+     * @param newData
+     */
+    public void setData(double[][] newData) {
+        data = newData;
+    }
+
+    /**
      * Refreshes the board.
      * <p>
      * This method calculates the the suitable square size based on the current
@@ -85,7 +108,26 @@ public class HighSeas extends JPanel {
         super.paint(g);
 
         Graphics2D g2 = (Graphics2D) g;
+        
+        if (data != null) {
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[i].length; j++) {
 
+                    double xOffset = (getWidth() - 1 - (cols + 1) * sqrSize) / 2;
+                    double yOffset = (getHeight() - 1 - (rows + 1) * sqrSize) / 2;
+
+                    Rectangle2D cell = new Rectangle2D.Double(sqrSize * (i + 1) + xOffset, sqrSize * (j + 1) + yOffset , sqrSize, sqrSize);
+
+                    g2.setPaint(Color.getHSBColor((float) (1f/3 - Math.pow(data[i][j],1.5)/3), 1f, 0.8f));
+                    //TODO adjust accordingly
+                    
+                    g2.fill(cell);
+                }
+            }
+        }
+        
+        g2.setPaint(Color.BLACK);
+        g2.setStroke(new BasicStroke(1));
         paintGrid(g2);
     }
 
