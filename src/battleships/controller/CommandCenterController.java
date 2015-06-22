@@ -119,6 +119,15 @@ public class CommandCenterController {
     }
 
     /**
+     * Returns the matrix for the states of the squares on the board.
+     * <p>
+     * @return The state matrix
+     */
+    public Board.SquareState[][] getStateData() {
+        return board.getStatesMatrix();
+    }
+
+    /**
      * Changes the state of the particular square on the board.
      * <p>
      * The order of the states are as follows: OPEN > MISS > HIT > OPEN. Calling

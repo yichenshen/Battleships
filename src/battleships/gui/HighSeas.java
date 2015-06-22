@@ -5,10 +5,13 @@
 
 package battleships.gui;
 
+import battleships.model.Board;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
@@ -55,6 +58,7 @@ public class HighSeas extends JPanel {
      * The data of the board.
      */
     private double[][] data;
+    private Board.SquareState[][] states;
     private int mouseGridX = -1;
     private int mouseGridY = -1;
 
@@ -105,17 +109,21 @@ public class HighSeas extends JPanel {
     }
 
     /**
-     * Sets the given array as the data array for the panel.
+     * Sets the given arrays as the data array and states array for the panel
+     * respectively.
      * <p>
      * The data array is used to determine the colouring of cells on the panel.
+     * The states array will determine special symbols to be displayed.
      * <p>
      * Note: This method does not make a copy of the array, and thus the array
      * may be modified else where.
      * <p>
-     * @param newData
+     * @param newData   The new data to be represented.
+     * @param newStates The new states of the board.
      */
-    public void setData(double[][] newData) {
+    public void setData(double[][] newData, Board.SquareState[][] newStates) {
         data = newData;
+        states = newStates;
         refresh();
     }
 
@@ -160,6 +168,7 @@ public class HighSeas extends JPanel {
         super.paint(g);
 
         Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (data != null) {
             for (int i = 0; i < data.length; i++) {
@@ -168,6 +177,7 @@ public class HighSeas extends JPanel {
 
                     float brightness = 0.8f;
 
+                    //TODO Fix this try an transclucent overlay 
                     if (mouseGridX != -1 && mouseGridY != -1 && (i == mouseGridX ^ j == mouseGridY)) {
                         brightness = 0.6f;
                     }
@@ -177,9 +187,19 @@ public class HighSeas extends JPanel {
                     } else {
                         g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], 1.5) / 3), 1f, brightness));
                     }
+                    g2.setStroke(new BasicStroke(1));
 
                     //TODO adjust accordingly
                     g2.fill(cell);
+
+                    g2.setPaint(Color.BLACK);
+                    g2.setStroke(new BasicStroke(3));
+                    switch (states[i][j]) {
+                        case MISS:
+                            Ellipse2D mark = new Ellipse2D.Double(sqrSize * (i + 1) + xOffset + 2, sqrSize * (j + 1) + yOffset + 2, sqrSize - 4, sqrSize - 4);
+                            g2.draw(mark);
+                            break;
+                    }
                 }
             }
         }

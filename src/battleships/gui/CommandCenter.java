@@ -30,7 +30,7 @@ public class CommandCenter extends javax.swing.JFrame {
 
         highSeasBoard.setSquares(controller.getBoardWidth(), controller.getBoardHeight());
 
-        highSeasBoard.setData(controller.getData());
+        highSeasBoard.setData(controller.getData(), controller.getStateData());
     }
 
     /**
@@ -205,7 +205,7 @@ public class CommandCenter extends javax.swing.JFrame {
         
         controller.stateChange(x, y);
         
-        highSeasBoard.setData(controller.getData());
+        highSeasBoard.setData(controller.getData(), controller.getStateData());
     }//GEN-LAST:event_highSeasBoardMouseClicked
 
     /**
