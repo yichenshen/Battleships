@@ -117,5 +117,26 @@ public class CommandCenterController {
         return returnData;
         //Use a cache for results
     }
+
+    /**
+     * Changes the state of the particular square on the board.
+     * <p>
+     * The order of the states are as follows: OPEN > MISS > HIT > OPEN. Calling
+     * {@code stateChange} for a square that is {@code SUNK} has no effect.
+     * <p>
+     * @param x The X position.
+     * @param y The Y position.
+     */
+    public void stateChange(int x, int y) {
+        switch (board.getState(x, y)) {
+            case OPEN:
+                board.stateChange(x, y, Board.SquareState.MISS);
+                break;
+            case MISS:
+                board.stateChange(x, y, Board.SquareState.OPEN);
+                break;
+        }
+    }
+
     //TODO implment the rest of the methods
 }

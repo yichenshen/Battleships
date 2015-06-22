@@ -120,6 +120,11 @@ public class CommandCenter extends javax.swing.JFrame {
                 highSeasBoardMouseMoved(evt);
             }
         });
+        highSeasBoard.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                highSeasBoardMouseClicked(evt);
+            }
+        });
         highSeasBoard.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 highSeasBoardComponentResized(evt);
@@ -193,6 +198,15 @@ public class CommandCenter extends javax.swing.JFrame {
     private void highSeasBoardMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseMoved
         highSeasBoard.setMousePos(evt.getX(), evt.getY());
     }//GEN-LAST:event_highSeasBoardMouseMoved
+
+    private void highSeasBoardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseClicked
+        int x = highSeasBoard.getGridX(evt.getX());
+        int y = highSeasBoard.getGridY(evt.getY());
+        
+        controller.stateChange(x, y);
+        
+        highSeasBoard.setData(controller.getData());
+    }//GEN-LAST:event_highSeasBoardMouseClicked
 
     /**
      * @param args the command line arguments

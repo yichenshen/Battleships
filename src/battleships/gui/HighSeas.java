@@ -33,6 +33,11 @@ public class HighSeas extends JPanel {
     static final double MAX_SQUARE_SIZE = 60;
 
     /**
+     * The transparent colour.
+     */
+    private static final Color transparent = new Color(0, 0, 0, 0);
+
+    /**
      * Number of columns for the grid.
      */
     private int cols = 0;
@@ -111,6 +116,7 @@ public class HighSeas extends JPanel {
      */
     public void setData(double[][] newData) {
         data = newData;
+        refresh();
     }
 
     /**
@@ -166,7 +172,11 @@ public class HighSeas extends JPanel {
                         brightness = 0.6f;
                     }
 
-                    g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], 1.5) / 3), 1f, brightness));
+                    if (Double.compare(data[i][j], 0) == 0) {
+                        g2.setPaint(transparent);
+                    } else {
+                        g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], 1.5) / 3), 1f, brightness));
+                    }
 
                     //TODO adjust accordingly
                     g2.fill(cell);

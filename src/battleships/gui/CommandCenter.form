@@ -176,6 +176,7 @@
     <Container class="battleships.gui.HighSeas" name="highSeasBoard">
       <Events>
         <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="highSeasBoardMouseMoved"/>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="highSeasBoardMouseClicked"/>
         <EventHandler event="componentResized" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="highSeasBoardComponentResized"/>
       </Events>
 
