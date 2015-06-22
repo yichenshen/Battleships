@@ -91,6 +91,22 @@ public interface Board {
     Integer[][] getShipsMatrix(Ship ship);
 
     /**
+     * Returns the state of the specified square.
+     * <p>
+     * @param x The X position
+     * @param y The Y position
+     * @return The state of the square.
+     */
+    SquareState getState(int x, int y);
+
+    /**
+     * Returns a matrix of the states of the board.
+     * <p>
+     * @return The states matrix
+     */
+    SquareState[][] getStatesMatrix();
+
+    /**
      * Adds a ship to the board.
      * <p>
      * @param ship The ship

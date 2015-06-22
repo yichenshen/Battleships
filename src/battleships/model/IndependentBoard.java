@@ -203,6 +203,22 @@ public class IndependentBoard implements Board {
     }
 
     @Override
+    public SquareState getState(int x, int y) {
+        return board[x][y];
+    }
+
+    @Override
+    public SquareState[][] getStatesMatrix() {
+        SquareState[][] copyMatrix = new SquareState[getWidth()][getHeight()];
+
+        for (int i = 0; i < board.length; i++) {
+            System.arraycopy(board[i], 0, copyMatrix[i], 0, board.length);
+        }
+
+        return copyMatrix;
+    }
+
+    @Override
     public void addShip(Ship ship) {
         ships.add(ship);
 
