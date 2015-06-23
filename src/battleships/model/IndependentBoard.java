@@ -259,74 +259,22 @@ public class IndependentBoard implements Board {
 
         switch (newState) {
             case MISS: {
-                Collection<Integer> affectedConfig = reverseMap.get(x).get(y);
-
-                affectedConfig.forEach(
-                        (Integer id) -> {
-                            if (configActive.get(id)) {
-                                //Ship of this config
-                                Ship ship = getShipOfConfig(id);
-
-                                configActive.put(id, Boolean.FALSE);
-
-                                Collection<Square> config = possibleShipConfigs.get(id);
-
-                                config.forEach(
-                                        (Square sqr) -> {
-                                            shipCounter.get(ship)[sqr.getX()][sqr.getY()]--;
-                                        }
-                                );
-
-                                //Decrement total configs for ship
-                                totalCounter.put(ship, totalCounter.get(ship) - 1);
-                            }
-                        }
-                );
-
+                disable(x, y);
                 break;
             }
 
             case OPEN: {
-                SquareState oldState = board[x][y];
-
-                switch (oldState) {
-                    case MISS: {
-                        board[x][y] = newState;
-
-                        Collection<Integer> affectedConfig = reverseMap.get(x).get(y);
-
-                        affectedConfig.forEach(
-                                (Integer id) -> {
-                                    //Ship of this config
-                                    Ship ship = getShipOfConfig(id);
-                                    Collection<Square> config = possibleShipConfigs.get(id);
-
-                                    if (checkConfig(config)) {
-                                        configActive.put(id, Boolean.TRUE);
-
-                                        config.forEach(
-                                                (Square sqr) -> {
-                                                    shipCounter.get(ship)[sqr.getX()][sqr.getY()]++;
-                                                }
-                                        );
-
-                                        totalCounter.put(ship, totalCounter.get(ship) + 1);
-                                    }
-                                }
-                        );
-
-                        break;
-                        //TODO add other
-                        //Hit: similiar to miss
-                        //Sunk: error
-                        //Open: do nothing
-                    }
-
-                }
-
+                //Need to set to OPEN for check config
+                board[x][y] = SquareState.OPEN;
+                enable(x, y);
                 break;
+                //TODO add other
+                //Hit: similiar to miss
+                //Sunk: error
+                //Open: do nothing
             }
         }
+
         //If new state is not to be assigned, an IllegalStateException should be thrown before this.
         //TODO after everything is implemented, relook this line
         board[x][y] = newState;
@@ -492,6 +440,73 @@ public class IndependentBoard implements Board {
     }
 
     /**
+     * Enables the square, changing all configs that overlap to active.
+     * <p>
+     * Also increments the counters accordingly.
+     * <p>
+     * @param x The X-coordinate of the square
+     * @param y The Y-coordinate of the square
+     */
+    private void enable(int x, int y) {
+        Collection<Integer> affectedConfig = reverseMap.get(x).get(y);
+
+        affectedConfig.forEach(
+                (Integer id) -> {
+                    //Ship of this config
+                    Ship ship = getShipOfConfig(id);
+                    Collection<Square> config = possibleShipConfigs.get(id);
+
+                    if (checkConfig(config)) {
+                        configActive.put(id, Boolean.TRUE);
+
+                        config.forEach(
+                                (Square sqr) -> {
+                                    shipCounter.get(ship)[sqr.getX()][sqr.getY()]++;
+                                }
+                        );
+
+                        totalCounter.put(ship, totalCounter.get(ship) + 1);
+                    }
+                }
+        );
+    }
+
+    /**
+     * Disable the square, setting all configs that overlaps the square to
+     * inactive.
+     * <p>
+     * Also decrements the counters accordingly.
+     * <p>
+     * @param x The X-coordinate of the square
+     * @param y The Y-coordinate of the square
+     */
+    private void disable(int x, int y) {
+        Collection<Integer> affectedConfig = reverseMap.get(x).get(y);
+
+        affectedConfig.forEach(
+                (Integer id) -> {
+                    if (configActive.get(id)) {
+                        //Ship of this config
+                        Ship ship = getShipOfConfig(id);
+
+                        configActive.put(id, Boolean.FALSE);
+
+                        Collection<Square> config = possibleShipConfigs.get(id);
+
+                        config.forEach(
+                                (Square sqr) -> {
+                                    shipCounter.get(ship)[sqr.getX()][sqr.getY()]--;
+                                }
+                        );
+
+                        //Decrement total configs for ship
+                        totalCounter.put(ship, totalCounter.get(ship) - 1);
+                    }
+                }
+        );
+    }
+
+    /**
      * Generates mapping for a given ship.
      * <p>
      * This method adds 4 mappings.
@@ -545,6 +560,7 @@ public class IndependentBoard implements Board {
                 )
                 .findFirst()
                 .orElse(null);
+
     }
 
     /**
