@@ -202,10 +202,12 @@ public class CommandCenter extends javax.swing.JFrame {
     private void highSeasBoardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseClicked
         int x = highSeasBoard.getGridX(evt.getX());
         int y = highSeasBoard.getGridY(evt.getY());
-        
-        controller.stateChange(x, y);
-        
-        highSeasBoard.setData(controller.getData(), controller.getStateData());
+
+        if (x != -1 && y != -1) {
+            controller.stateChange(x, y);
+
+            highSeasBoard.setData(controller.getData(), controller.getStateData());
+        }
     }//GEN-LAST:event_highSeasBoardMouseClicked
 
     /**
