@@ -167,46 +167,56 @@ public class HighSeas extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
 
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         if (data != null) {
             for (int i = 0; i < data.length; i++) {
                 for (int j = 0; j < data[i].length; j++) {
-                    Rectangle2D cell = new Rectangle2D.Double(sqrSize * (i + 1) + xOffset, sqrSize * (j + 1) + yOffset, sqrSize, sqrSize);
+                    final Graphics2D g2 = (Graphics2D) g.create();
+                    
+                    try {
+                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                    float brightness = 0.8f;
+                        Rectangle2D cell = new Rectangle2D.Double(sqrSize * (i + 1) + xOffset, sqrSize * (j + 1) + yOffset, sqrSize, sqrSize);
 
-                    //TODO Fix this try an transclucent overlay 
-                    if (mouseGridX != -1 && mouseGridY != -1 && (i == mouseGridX ^ j == mouseGridY)) {
-                        brightness = 0.6f;
-                    }
+                        float brightness = 0.8f;
 
-                    if (Double.compare(data[i][j], 0) == 0) {
-                        g2.setPaint(transparent);
-                    } else {
-                        g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], 1.5) / 3), 1f, brightness));
-                    }
-                    g2.setStroke(new BasicStroke(1));
+                        //TODO Fix this try an transclucent overlay 
+                        if (mouseGridX != -1 && mouseGridY != -1 && (i == mouseGridX ^ j == mouseGridY)) {
+                            brightness = 0.6f;
+                        }
 
-                    //TODO adjust accordingly
-                    g2.fill(cell);
+                        if (Double.compare(data[i][j], 0) == 0) {
+                            g2.setPaint(transparent);
+                        } else {
+                            g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], 1.5) / 3), 1f, brightness));
+                        }
 
-                    g2.setPaint(Color.BLACK);
-                    g2.setStroke(new BasicStroke(3));
-                    switch (states[i][j]) {
-                        case MISS:
-                            Ellipse2D mark = new Ellipse2D.Double(sqrSize * (i + 1) + xOffset + 2, sqrSize * (j + 1) + yOffset + 2, sqrSize - 4, sqrSize - 4);
-                            g2.draw(mark);
-                            break;
+                        //TODO adjust accordingly
+                        g2.fill(cell);
+
+                        g2.setPaint(Color.BLACK);
+                        g2.setStroke(new BasicStroke(3));
+                        switch (states[i][j]) {
+                            case MISS:
+                                Ellipse2D mark = new Ellipse2D.Double(sqrSize * (i + 1) + xOffset + 2, sqrSize * (j + 1) + yOffset + 2, sqrSize - 4, sqrSize - 4);
+                                g2.draw(mark);
+                                break;
+                        }
+                    } finally {
+                        g2.dispose();
                     }
                 }
             }
         }
 
-        g2.setPaint(Color.BLACK);
-        g2.setStroke(new BasicStroke(1));
-        paintGrid(g2);
+        final Graphics2D g2 = (Graphics2D) g.create();
+
+        try {
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            paintGrid(g2);
+        } finally {
+            g2.dispose();
+        }
     }
 
     /**
