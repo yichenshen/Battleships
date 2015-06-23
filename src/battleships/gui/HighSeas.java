@@ -38,7 +38,27 @@ public class HighSeas extends JPanel {
     /**
      * The transparent colour.
      */
-    private static final Color transparent = new Color(0, 0, 0, 0);
+    private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
+
+    /**
+     * The colour for overlay highlights
+     */
+    private static final Color OVERLAY = new Color(0, 0, 0, 0.25f);
+
+    /**
+     * The HSB brightness for square colouring.
+     */
+    private static final float BRIGHTNESS = 0.8f;
+
+    /**
+     * The HSB saturation for square colouring.
+     */
+    private static final float SATURATION = 1f;
+
+    /**
+     * The polynomial exponent for increasing hue.
+     */
+    private static final float HUE_SLOPE = 1.5f;
 
     /**
      * Number of columns for the grid.
@@ -171,27 +191,24 @@ public class HighSeas extends JPanel {
             for (int i = 0; i < data.length; i++) {
                 for (int j = 0; j < data[i].length; j++) {
                     final Graphics2D g2 = (Graphics2D) g.create();
-                    
+
                     try {
                         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                         Rectangle2D cell = new Rectangle2D.Double(sqrSize * (i + 1) + xOffset, sqrSize * (j + 1) + yOffset, sqrSize, sqrSize);
 
-                        float brightness = 0.8f;
-
-                        //TODO Fix this try an transclucent overlay 
-                        if (mouseGridX != -1 && mouseGridY != -1 && (i == mouseGridX ^ j == mouseGridY)) {
-                            brightness = 0.6f;
-                        }
-
                         if (Double.compare(data[i][j], 0) == 0) {
-                            g2.setPaint(transparent);
+                            g2.setPaint(TRANSPARENT);
                         } else {
-                            g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], 1.5) / 3), 1f, brightness));
+                            g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], HUE_SLOPE) / 3), SATURATION, BRIGHTNESS));
                         }
 
-                        //TODO adjust accordingly
                         g2.fill(cell);
+
+                        if (mouseGridX != -1 && mouseGridY != -1 && (i == mouseGridX || j == mouseGridY)) {
+                            g2.setPaint(OVERLAY);
+                            g2.fill(cell);
+                        }
 
                         g2.setPaint(Color.BLACK);
                         g2.setStroke(new BasicStroke(3));
@@ -212,7 +229,7 @@ public class HighSeas extends JPanel {
 
         try {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            
+
             paintGrid(g2);
         } finally {
             g2.dispose();
