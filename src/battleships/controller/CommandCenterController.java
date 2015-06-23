@@ -110,7 +110,11 @@ public class CommandCenterController {
 
         for (int i = 0; i < returnData.length; i++) {
             for (int j = 0; j < returnData[i].length; j++) {
-                returnData[i][j] = raw[i][j] * 1.0 / max;
+                if (Double.compare(max, 0) == 0) {
+                    returnData[i][j] = 0;
+                } else {
+                    returnData[i][j] = raw[i][j] * 1.0 / max;
+                }
             }
         }
 
