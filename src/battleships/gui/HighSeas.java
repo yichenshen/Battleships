@@ -34,27 +34,22 @@ public class HighSeas extends JPanel {
      * Maximum allowed size for a square.
      */
     static final double MAX_SQUARE_SIZE = 60;
-
     /**
      * The transparent colour.
      */
     private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
-
     /**
      * The colour for overlay highlights
      */
     private static final Color OVERLAY = new Color(0, 0, 0, 0.25f);
-
     /**
      * The HSB brightness for square colouring.
      */
     private static final float BRIGHTNESS = 0.8f;
-
     /**
      * The HSB saturation for square colouring.
      */
     private static final float SATURATION = 1f;
-
     /**
      * The polynomial exponent for increasing hue.
      */
@@ -72,14 +67,38 @@ public class HighSeas extends JPanel {
      * The size of a square on the grid.
      */
     private double sqrSize = MAX_SQUARE_SIZE;
+    /**
+     * The starting x position to draw the board (including labels) on.
+     */
     private double xOffset = 0;
+    /**
+     * The starting y position to draw the board (including labels) on.
+     */
     private double yOffset = 0;
     /**
      * The data of the board.
+     * <p>
+     * This determines the colouring of the squares corresponds to the
+     * calculations of ships.
      */
     private double[][] data;
+    /**
+     * The states of the squares.
+     * <p>
+     * This determines additional markers places on top of squares.
+     */
     private Board.SquareState[][] states;
+    /**
+     * The X position of the mouse in board coordinates.
+     * <p>
+     * This is used to determine the overlays for hover.
+     */
     private int mouseGridX = -1;
+    /**
+     * The Y position of the mouse in board coordinates.
+     * <p>
+     * This is used to determine the overlays for hover.
+     */
     private int mouseGridY = -1;
 
     /**
@@ -88,6 +107,14 @@ public class HighSeas extends JPanel {
     public HighSeas() {
     }
 
+    /**
+     * Gets the grid X-coordinate based on relative X pixel position.
+     * <p>
+     * Returns -1 if pixel position is outside the board.
+     * <p>
+     * @param x The pixel X position
+     * @return The X-coordinate of the corresponding square or -1.
+     */
     public int getGridX(double x) {
         int gridX = (int) (Math.floor(x - xOffset) / sqrSize) - 1;
 
@@ -98,6 +125,14 @@ public class HighSeas extends JPanel {
         return gridX;
     }
 
+    /**
+     * Gets the grid Y-coordinate based on relative Y pixel position.
+     * <p>
+     * Returns -1 if pixel position is outside the board.
+     * <p>
+     * @param y The pixel Y position
+     * @return The Y-coordinate of the corresponding square or -1.
+     */
     public int getGridY(double y) {
         int gridY = (int) (Math.floor(y - yOffset) / sqrSize) - 1;
 
