@@ -37,6 +37,10 @@ public class CommandCenterController {
      * A result cache to store processes data.
      */
     private double[][] resultCache;
+    /**
+     * The largest value for raw data in the data matrix.
+     */
+    private int maxResult;
 
     /**
      * Creates a standard battleship game.
@@ -113,6 +117,21 @@ public class CommandCenterController {
         return resultCache;
     }
 
+    public int getMax() {
+        if (resultCache == null) {
+            recalculate();
+        }
+        return maxResult;
+    }
+
+    public int getSqaureVal(int x, int y) {
+        if (resultCache == null) {
+            recalculate();
+        }
+
+        return (int) Math.round(resultCache[x][y] * maxResult);
+    }
+
     /**
      * Returns the matrix for the states of the squares on the board.
      * <p>
@@ -178,6 +197,8 @@ public class CommandCenterController {
                 }
             }
         }
+
+        maxResult = max;
     }
     //TODO implment the rest of the methods
 }

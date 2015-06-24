@@ -197,6 +197,22 @@ public class CommandCenter extends javax.swing.JFrame {
 
     private void highSeasBoardMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseMoved
         highSeasBoard.setMousePos(evt.getX(), evt.getY());
+
+        int x = highSeasBoard.getGridX(evt.getX());
+        int y = highSeasBoard.getGridY(evt.getY());
+
+        if (x != -1 && y != -1) {
+
+            StringBuilder label = new StringBuilder();
+
+            label.append("(").append(x + 1).append(", ").append(y + 1).append("): ");
+
+            label.append(controller.getSqaureVal(x, y)).append(" possible configs. Highest: ").append(controller.getMax());
+
+            statusLabel.setText(label.toString());
+        } else {
+            statusLabel.setText("Status");
+        }
     }//GEN-LAST:event_highSeasBoardMouseMoved
 
     private void highSeasBoardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseClicked
