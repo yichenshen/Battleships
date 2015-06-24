@@ -146,6 +146,9 @@ public class CommandCenterController {
                 board.stateChange(x, y, Board.SquareState.MISS);
                 break;
             case MISS:
+                board.stateChange(x, y, Board.SquareState.HIT);
+                break;
+            case HIT:
                 board.stateChange(x, y, Board.SquareState.OPEN);
                 break;
         }

@@ -263,6 +263,7 @@ public class IndependentBoard implements Board {
                 break;
             }
 
+            case HIT:
             case OPEN: {
                 //Need to set to OPEN for check config
                 board[x][y] = SquareState.OPEN;
@@ -456,7 +457,7 @@ public class IndependentBoard implements Board {
                     Ship ship = getShipOfConfig(id);
                     Collection<Square> config = possibleShipConfigs.get(id);
 
-                    if (checkConfig(config)) {
+                    if (!configActive.get(id) && checkConfig(config)) {
                         configActive.put(id, Boolean.TRUE);
 
                         config.forEach(

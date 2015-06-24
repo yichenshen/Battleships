@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 
@@ -54,6 +55,10 @@ public class HighSeas extends JPanel {
      * The polynomial exponent for increasing hue.
      */
     private static final float HUE_SLOPE = 1.5f;
+    /**
+     * Padding for markers in the square.
+     */
+    private static final int PADDING = 2;
 
     /**
      * Number of columns for the grid.
@@ -232,7 +237,7 @@ public class HighSeas extends JPanel {
 
                         Rectangle2D cell = new Rectangle2D.Double(sqrSize * (i + 1) + xOffset, sqrSize * (j + 1) + yOffset, sqrSize, sqrSize);
 
-                        if (Double.compare(data[i][j], 0) == 0) {
+                        if (Double.compare(data[i][j], 0) == 0 || states[i][j] != Board.SquareState.OPEN) {
                             g2.setPaint(TRANSPARENT);
                         } else {
                             g2.setPaint(Color.getHSBColor((float) (1f / 3 - Math.pow(data[i][j], HUE_SLOPE) / 3), SATURATION, BRIGHTNESS));
@@ -240,18 +245,35 @@ public class HighSeas extends JPanel {
 
                         g2.fill(cell);
 
+                        //Paint overlay for hover
                         if (mouseGridX != -1 && mouseGridY != -1 && (i == mouseGridX || j == mouseGridY)) {
                             g2.setPaint(OVERLAY);
                             g2.fill(cell);
                         }
 
+                        //Draw state markers
+                        double xIni = sqrSize * (i + 1) + xOffset + PADDING;
+                        double yIni = sqrSize * (j + 1) + yOffset + PADDING;
+
                         g2.setPaint(Color.BLACK);
                         g2.setStroke(new BasicStroke(3));
                         switch (states[i][j]) {
-                            case MISS:
-                                Ellipse2D mark = new Ellipse2D.Double(sqrSize * (i + 1) + xOffset + 2, sqrSize * (j + 1) + yOffset + 2, sqrSize - 4, sqrSize - 4);
+                            case MISS: {
+                                Ellipse2D mark = new Ellipse2D.Double(xIni, yIni, sqrSize - PADDING * 2, sqrSize - PADDING * 2);
                                 g2.draw(mark);
                                 break;
+                            }
+                            case HIT: {
+                                Path2D cross = new Path2D.Double();
+                                cross.moveTo(xIni, yIni);
+                                cross.lineTo(xIni + sqrSize - PADDING * 2, yIni + sqrSize - PADDING * 2);
+
+                                cross.moveTo(xIni + sqrSize - PADDING * 2, yIni);
+                                cross.lineTo(xIni, yIni + sqrSize - PADDING * 2);
+
+                                g2.draw(cross);
+                                break;
+                            }
                         }
                     } finally {
                         g2.dispose();
