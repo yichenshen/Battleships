@@ -33,6 +33,10 @@ public class CommandCenterController {
      * Each ship has a name to identify it.
      */
     private final Map<String, Ship> ships;
+    /**
+     * A result cache to store processes data.
+     */
+    private double[][] resultCache;
 
     /**
      * Creates a standard battleship game.
@@ -93,33 +97,20 @@ public class CommandCenterController {
      * is the number of configurations normalised from 0 to 1 based on the
      * highest number of configurations in the matrix.
      * <p>
+     * Returns results from a cache directly. Modifying the array returned will
+     * modify the cache too! Cache is recalculated when states are changed. A
+     * null cache will cause a call to {@code recalculate()} before results are
+     * returned.
+     * <p>
      * @return The numerical data to display
+     * @see #recalculate()
      */
     public double[][] getData() {
-        Integer[][] raw = board.getShipsMatrix();
-
-        int max = 0;
-
-        for (Integer[] col : raw) {
-            for (Integer cell : col) {
-                max = Math.max(cell, max);
-            }
+        if (resultCache == null) {
+            recalculate();
         }
 
-        double[][] returnData = new double[board.getWidth()][board.getHeight()];
-
-        for (int i = 0; i < returnData.length; i++) {
-            for (int j = 0; j < returnData[i].length; j++) {
-                if (Double.compare(max, 0) == 0) {
-                    returnData[i][j] = 0;
-                } else {
-                    returnData[i][j] = raw[i][j] * 1.0 / max;
-                }
-            }
-        }
-
-        return returnData;
-        //Use a cache for results
+        return resultCache;
     }
 
     /**
@@ -137,6 +128,8 @@ public class CommandCenterController {
      * The order of the states are as follows: OPEN > MISS > HIT > OPEN. Calling
      * {@code stateChange} for a square that is {@code SUNK} has no effect.
      * <p>
+     * The cache is recalculated after a state change.
+     * <p>
      * @param x The X position.
      * @param y The Y position.
      */
@@ -152,7 +145,39 @@ public class CommandCenterController {
                 board.stateChange(x, y, Board.SquareState.OPEN);
                 break;
         }
+
+        recalculate();
     }
 
+    /**
+     * Recalculates the data in the cache.
+     * <p>
+     * If the cache is null, a new array is instantiated.
+     */
+    private void recalculate() {
+        Integer[][] raw = board.getShipsMatrix();
+
+        int max = 0;
+
+        for (Integer[] col : raw) {
+            for (Integer cell : col) {
+                max = Math.max(cell, max);
+            }
+        }
+
+        if (resultCache == null) {
+            resultCache = new double[board.getWidth()][board.getHeight()];
+        }
+
+        for (int i = 0; i < resultCache.length; i++) {
+            for (int j = 0; j < resultCache[i].length; j++) {
+                if (Double.compare(max, 0) == 0) {
+                    resultCache[i][j] = 0;
+                } else {
+                    resultCache[i][j] = raw[i][j] * 1.0 / max;
+                }
+            }
+        }
+    }
     //TODO implment the rest of the methods
 }
