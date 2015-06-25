@@ -37,6 +37,7 @@ public class CommandCenterController {
      * A result cache to store processes data.
      */
     private double[][] resultCache;
+    private Board.SquareState[][] stateCache;
     /**
      * The largest value for raw data in the data matrix.
      */
@@ -138,7 +139,10 @@ public class CommandCenterController {
      * @return The state matrix
      */
     public Board.SquareState[][] getStateData() {
-        return board.getStatesMatrix();
+        if (stateCache == null) {
+            recalculate();
+        }
+        return stateCache;
     }
 
     /**
@@ -176,11 +180,15 @@ public class CommandCenterController {
     private void recalculate() {
         Integer[][] raw = board.getShipsMatrix();
 
+        stateCache = board.getStatesMatrix();
+
         int max = 0;
 
-        for (Integer[] col : raw) {
-            for (Integer cell : col) {
-                max = Math.max(cell, max);
+        for (int i = 0; i < raw.length; i++) {
+            for (int j = 0; j < raw[i].length; j++) {
+                if (stateCache[i][j].equals(Board.SquareState.OPEN)) {
+                    max = Math.max(raw[i][j], max);
+                }
             }
         }
 
@@ -190,7 +198,7 @@ public class CommandCenterController {
 
         for (int i = 0; i < resultCache.length; i++) {
             for (int j = 0; j < resultCache[i].length; j++) {
-                if (Double.compare(max, 0) == 0) {
+                if (Double.compare(max, 0) == 0 || !stateCache[i][j].equals(Board.SquareState.OPEN)) {
                     resultCache[i][j] = 0;
                 } else {
                     resultCache[i][j] = raw[i][j] * 1.0 / max;

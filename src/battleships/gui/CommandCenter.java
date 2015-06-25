@@ -207,7 +207,22 @@ public class CommandCenter extends javax.swing.JFrame {
 
             label.append("(").append(x + 1).append(", ").append(y + 1).append("): ");
 
-            label.append(controller.getSqaureVal(x, y)).append(" possible configs. Highest: ").append(controller.getMax());
+            switch (controller.getStateData()[x][y]) {
+                case OPEN: {
+                    label.append(controller.getSqaureVal(x, y)).append(" possible configs.");
+                    break;
+                }
+                case HIT: {
+                    label.append("Hit ");
+                    break;
+                }
+                case MISS: {
+                    label.append("Miss ");
+                    break;
+                }
+            }
+
+            label.append(" Highest: ").append(controller.getMax());
 
             statusLabel.setText(label.toString());
         } else {
