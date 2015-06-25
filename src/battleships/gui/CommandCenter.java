@@ -6,6 +6,10 @@
 package battleships.gui;
 
 import battleships.controller.CommandCenterController;
+import java.util.Iterator;
+import java.util.Set;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 
 /**
  * The main and standard GUI for displaying and calculating probabilities for a
@@ -20,12 +24,19 @@ public class CommandCenter extends javax.swing.JFrame {
      * The controller for this GUI
      */
     private final CommandCenterController controller;
+    private final DefaultListModel shipSelectModel;
 
     /**
      * Creates new form CommandCenter
      */
     public CommandCenter() {
         controller = new CommandCenterController();
+
+        shipSelectModel = new DefaultListModel();
+        Set<String> names = controller.getShipNames();
+
+        names.forEach((name) -> shipSelectModel.addElement(name));
+
         initComponents();
 
         highSeasBoard.setSquares(controller.getBoardWidth(), controller.getBoardHeight());
@@ -79,11 +90,7 @@ public class CommandCenter extends javax.swing.JFrame {
         sinkButton.setPreferredSize(new java.awt.Dimension(80, 28));
         buttonPanel.add(sinkButton);
 
-        shipsList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        shipsList.setModel(shipSelectModel);
         shipsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         shipsListScrollPane.setViewportView(shipsList);
 
