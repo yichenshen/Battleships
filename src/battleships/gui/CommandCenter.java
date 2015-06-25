@@ -6,10 +6,8 @@
 package battleships.gui;
 
 import battleships.controller.CommandCenterController;
-import java.util.Iterator;
 import java.util.Set;
 import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
 
 /**
  * The main and standard GUI for displaying and calculating probabilities for a

@@ -9,7 +9,6 @@ import battleships.model.BasicShip;
 import battleships.model.Board;
 import battleships.model.IndependentBoard;
 import battleships.model.Ship;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -75,8 +74,8 @@ public class CommandCenterController {
             ships.put(shipNames[i], newShip);
         }
     }
-    
-    public Set<String> getShipNames(){
+
+    public Set<String> getShipNames() {
         return ships.keySet();
     }
 
