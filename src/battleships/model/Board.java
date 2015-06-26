@@ -150,11 +150,52 @@ public interface Board {
      * If the new state defined is illegal given the current state of the board,
      * an {@code IllegalStateException} is thrown.
      * <p>
+     * {@code SUNK} state cannot be assigned with this method, an
+     * {@code IllegalArguementException} will be thrown. Similarly, a square in
+     * the {@code SUNK} state cannot be changed. The ship should first be
+     * raised.
+     * <p>
      * @param x        X-coordinate of the square
      * @param y        Y-coordinate of the square
      * @param newState The state of the square to change to.
-     * @throws IllegalStateException If the new state is not allowed for the
-     *                               specified square.
+     * @throws IllegalStateException    If the new state is not allowed for the
+     *                                  specified square.
+     * @throws IllegalArgumentException If the new state is specified to be
+     *                                  {@code SUNK}
+     * @see #raise(battleships.model.Ship, int, int, int)
      */
     void stateChange(int x, int y, SquareState newState);
+
+    /**
+     * Sinks the ship as specified with rotation, at the position passed in.
+     * <p>
+     * Position passed in should be the origin of the ship position, a.k.a (0,0)
+     * in the ship's coordinate list. Ship will only be successfully sunk if all
+     * it's squares are in the {@code HIT} state.
+     * <p>
+     * @param ship     The ship to sink (non-rotated)
+     * @param rotateCW The number of times to rotate the ship clockwise
+     * @param x        The X coordinate of the ship origin
+     * @param y        The Y coordinate of the ship origin
+     */
+    void sink(Ship ship, int rotateCW, int x, int y);
+
+    /**
+     * Raises a sunken ship as specified with rotation, at the position passed
+     * in.
+     * <p>
+     * Position passed in should be the origin of the ship position, a.k.a (0,0)
+     * in the ship's coordinate list. Ship will only be successfully raised if
+     * all it's squares are in the {@code SUNK} state.
+     * <p>
+     * After the ship is "raised", it's squares will be set to {@code HIT}. The
+     * state then can be changed with {@code stateChange()}.
+     * <p>
+     * @param ship     The ship to raise (non-rotated)
+     * @param rotateCW The number of times to rotate the ship clockwise
+     * @param x        The X coordinate of the ship origin
+     * @param y        The Y coordinate of the ship origin
+     * @see #stateChange(int, int, battleships.model.Board.SquareState)
+     */
+    void raise(Ship ship, int rotateCW, int x, int y);
 }
