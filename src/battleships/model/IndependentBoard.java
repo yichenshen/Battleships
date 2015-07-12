@@ -329,7 +329,6 @@ public class IndependentBoard implements Board {
         }
 
         return sinkable;
-        //TODO implement test
     }
 
     @Override
@@ -382,6 +381,7 @@ public class IndependentBoard implements Board {
         }
 
         return raisable;
+        //TODO implement test
     }
 
     /**

@@ -175,7 +175,7 @@ public class IndependentBoardTest {
     public void testSquareUnmiss() throws Exception {
         board.stateChange(1, 1, Board.SquareState.MISS);
         board.stateChange(1, 1, Board.SquareState.OPEN);
-        
+
         //Test case for initial probabilities
         double val1 = 3.0 / 16 + 4.0 / 24 - 3.0 / 16 * 4.0 / 24;
         val1 = val1 + 0.5 - val1 * 0.5;
@@ -188,5 +188,31 @@ public class IndependentBoardTest {
         double[][] expected = {{val1, val2, val1}, {val2, val3, val2}, {val1, val2, val1}};
 
         assertArrayEquals(expected, board.getProbabilityMatrix());
+    }
+
+    @Test
+    public void testSinkFalse() throws Exception {
+        assertFalse(board.sink(ship1, 0, 0, 0));
+    }
+
+    @Test
+    public void testSink() throws Exception {
+        board.stateChange(0, 0, Board.SquareState.HIT);
+        board.stateChange(0, 1, Board.SquareState.HIT);
+        board.stateChange(1, 0, Board.SquareState.HIT);
+
+        assertTrue(board.sink(ship1, 0, 0, 0));
+
+        Board.SquareState[][] expected = {
+            {Board.SquareState.SUNK, Board.SquareState.SUNK, Board.SquareState.OPEN},
+            {Board.SquareState.SUNK, Board.SquareState.OPEN, Board.SquareState.OPEN},
+            {Board.SquareState.OPEN, Board.SquareState.OPEN, Board.SquareState.OPEN}
+        };
+
+        assertArrayEquals(expected, board.getStatesMatrix());
+
+        int[][] expectedShips = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+
+        assertArrayEquals(expectedShips, board.getShipsMatrix(ship1));
     }
 }
