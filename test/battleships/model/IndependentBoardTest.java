@@ -21,6 +21,8 @@ import org.junit.Test;
  */
 public class IndependentBoardTest {
 
+    private static final double DELTA = 0.00000000000000000000000001;
+    
     IndependentBoard board;
     //Test ships
     Ship ship1, ship2, ship3;
@@ -89,6 +91,23 @@ public class IndependentBoardTest {
         double[][] expected = {{0.5, 0.5, 0.5}, {0.5, 0, 0.5}, {0.5, 0.5, 0.5}};
 
         assertArrayEquals(expected, probMatrix);
+    }
+
+    @Test
+    public void testZeroProbability() throws Exception {
+        board.stateChange(0, 0, Board.SquareState.MISS);
+
+        assertEquals(0, board.getProbabilityMatrix()[0][0], DELTA);
+
+        for (int i = 0; i < board.getWidth(); i++) {
+            for (int y = 0; y < board.getHeight(); y++) {
+                board.stateChange(i, y, Board.SquareState.MISS);
+            }
+        }
+
+        double[][] expected = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+
+        assertArrayEquals(expected, board.getProbabilityMatrix());
     }
 
     @Test
@@ -175,7 +194,7 @@ public class IndependentBoardTest {
     public void testSquareUnmiss() throws Exception {
         board.stateChange(1, 1, Board.SquareState.MISS);
         board.stateChange(1, 1, Board.SquareState.OPEN);
-        
+
         //Test case for initial probabilities
         double val1 = 3.0 / 16 + 4.0 / 24 - 3.0 / 16 * 4.0 / 24;
         val1 = val1 + 0.5 - val1 * 0.5;
