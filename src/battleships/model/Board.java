@@ -173,12 +173,18 @@ public interface Board {
      * in the ship's coordinate list. Ship will only be successfully sunk if all
      * it's squares are in the {@code HIT} state.
      * <p>
+     * The ship provided should be the non-rotated ship, that is equals to one
+     * of the ships in the ship list. An {@code IllegalArgumentExException} will
+     * be thrown otherwise.
+     * <p>
      * @param ship     The ship to sink (non-rotated)
      * @param rotateCW The number of times to rotate the ship clockwise
      * @param x        The X coordinate of the ship origin
      * @param y        The Y coordinate of the ship origin
+     * @return {@code true} if the ship is successfully sunk, {@code false}
+     *         otherwise
      */
-    void sink(Ship ship, int rotateCW, int x, int y);
+    boolean sink(Ship ship, int rotateCW, int x, int y);
 
     /**
      * Raises a sunken ship as specified with rotation, at the position passed
@@ -191,11 +197,17 @@ public interface Board {
      * After the ship is "raised", it's squares will be set to {@code HIT}. The
      * state then can be changed with {@code stateChange()}.
      * <p>
+     * The ship provided should be the non-rotated ship, that is equals to one
+     * of the ships in the ship list. An {@code IllegalArgumentExException} will
+     * be thrown otherwise.
+     * <p>
      * @param ship     The ship to raise (non-rotated)
      * @param rotateCW The number of times to rotate the ship clockwise
      * @param x        The X coordinate of the ship origin
      * @param y        The Y coordinate of the ship origin
+     * @return {@code true} if the ship is successfully raised, {@code false}
+     *         otherwise
      * @see #stateChange(int, int, battleships.model.Board.SquareState)
      */
-    void raise(Ship ship, int rotateCW, int x, int y);
+    boolean raise(Ship ship, int rotateCW, int x, int y);
 }

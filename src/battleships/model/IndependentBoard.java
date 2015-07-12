@@ -284,7 +284,7 @@ public class IndependentBoard implements Board {
     }
 
     @Override
-    public void sink(Ship ship, int rotateCW, int x, int y) {
+    public boolean sink(Ship ship, int rotateCW, int x, int y) {
         if (!ships.contains(ship)) {
             throw new IllegalArgumentException("No such ship!");
         }
@@ -327,12 +327,61 @@ public class IndependentBoard implements Board {
                 }
             }
         }
+
+        return sinkable;
         //TODO implement test
     }
 
     @Override
-    public void raise(Ship ship, int rotateCW, int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean raise(Ship ship, int rotateCW, int x, int y) {
+        //TODO only unsink at sunk position instead
+        if (!ships.contains(ship)) {
+            throw new IllegalArgumentException("No such ship!");
+        }
+
+        Ship rotatedShip = ship.rotateCWNinety(rotateCW);
+
+        boolean raisable = true;
+        for (Iterator<Square> it = rotatedShip.iterator(); it.hasNext() && raisable;) {
+            Square sqr = it.next();
+            int absX = sqr.getX() + x;
+            int absY = sqr.getY() + y;
+
+            if (absX >= 0 && absX < getWidth() && absY >= 0 && absY < getHeight()) {
+                raisable &= board[absX][absY].equals(SquareState.SUNK);
+            } else {
+                raisable = false;
+            }
+        }
+
+        if (raisable) {
+            for (Square sqr : rotatedShip) {
+                int absX = sqr.getX() + x;
+                int absY = sqr.getY() + y;
+
+                //No need to disable since we're setting everything to inactive and 0.
+                board[absX][absY] = SquareState.HIT;
+            }
+
+            Collection<Integer> configList = shipToConfigID.get(ship);
+
+            configList.forEach((id) -> {
+                Iterable<Square> config = possibleShipConfigs.get(id);
+                if (checkConfig(config)) {
+                    configActive.put(id, Boolean.TRUE);
+
+                    config.forEach(
+                            (Square sqr) -> {
+                                shipCounter.get(ship)[sqr.getX()][sqr.getY()]++;
+                            }
+                    );
+
+                    totalCounter.put(ship, totalCounter.get(ship) + 1);
+                }
+            });
+        }
+
+        return raisable;
     }
 
     /**
