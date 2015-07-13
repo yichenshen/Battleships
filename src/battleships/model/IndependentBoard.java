@@ -84,6 +84,10 @@ public class IndependentBoard implements Board {
      * Stores the total number of configurations for each ship.
      */
     private Map<Ship, Integer> totalCounter;
+    /**
+     * Stores the configuration for the position of a sunken ship.
+     */
+    private Map<Ship, Collection<Square>> sunkMap;
     // </editor-fold>
 
     /**
@@ -118,6 +122,7 @@ public class IndependentBoard implements Board {
         ships = new ArrayList<>();
         possibleShipConfigs = new TreeMap<>();
         configActive = new HashMap<>();
+        sunkMap = new HashMap<>();
     }
 
     @Override
@@ -305,13 +310,17 @@ public class IndependentBoard implements Board {
         }
 
         if (sinkable) {
+            Collection<Square> sunkPos = new ArrayList<>();
             for (Square sqr : rotatedShip) {
                 int absX = sqr.getX() + x;
                 int absY = sqr.getY() + y;
 
                 //No need to disable since we're setting everything to inactive and 0.
                 board[absX][absY] = SquareState.SUNK;
+                sunkPos.add(new Square(absX, absY));
             }
+
+            sunkMap.put(ship, sunkPos);
 
             Collection<Integer> configList = shipToConfigID.get(ship);
 
@@ -332,55 +341,31 @@ public class IndependentBoard implements Board {
     }
 
     @Override
-    public boolean raise(Ship ship, int rotateCW, int x, int y) {
+    public void raise(Ship ship) {
         //TODO only unsink at sunk position instead
-        if (!ships.contains(ship)) {
-            throw new IllegalArgumentException("No such ship!");
+        if (!sunkMap.containsKey(ship)) {
+            throw new IllegalArgumentException("No such sunken ship!");
         }
 
-        Ship rotatedShip = ship.rotateCWNinety(rotateCW);
+        sunkMap.get(ship).stream().forEach((sqr) -> board[sqr.getX()][sqr.getY()] = SquareState.HIT);
 
-        boolean raisable = true;
-        for (Iterator<Square> it = rotatedShip.iterator(); it.hasNext() && raisable;) {
-            Square sqr = it.next();
-            int absX = sqr.getX() + x;
-            int absY = sqr.getY() + y;
+        Collection<Integer> configList = shipToConfigID.get(ship);
 
-            if (absX >= 0 && absX < getWidth() && absY >= 0 && absY < getHeight()) {
-                raisable &= board[absX][absY].equals(SquareState.SUNK);
-            } else {
-                raisable = false;
+        configList.forEach((id) -> {
+            Iterable<Square> config = possibleShipConfigs.get(id);
+            if (checkConfig(config)) {
+                configActive.put(id, Boolean.TRUE);
+
+                config.forEach(
+                        (Square sqr) -> {
+                            shipCounter.get(ship)[sqr.getX()][sqr.getY()]++;
+                        }
+                );
+
+                totalCounter.put(ship, totalCounter.get(ship) + 1);
             }
-        }
+        });
 
-        if (raisable) {
-            for (Square sqr : rotatedShip) {
-                int absX = sqr.getX() + x;
-                int absY = sqr.getY() + y;
-
-                //No need to disable since we're setting everything to inactive and 0.
-                board[absX][absY] = SquareState.HIT;
-            }
-
-            Collection<Integer> configList = shipToConfigID.get(ship);
-
-            configList.forEach((id) -> {
-                Iterable<Square> config = possibleShipConfigs.get(id);
-                if (checkConfig(config)) {
-                    configActive.put(id, Boolean.TRUE);
-
-                    config.forEach(
-                            (Square sqr) -> {
-                                shipCounter.get(ship)[sqr.getX()][sqr.getY()]++;
-                            }
-                    );
-
-                    totalCounter.put(ship, totalCounter.get(ship) + 1);
-                }
-            });
-        }
-
-        return raisable;
         //TODO implement test
     }
 

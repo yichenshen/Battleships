@@ -177,37 +177,35 @@ public interface Board {
      * of the ships in the ship list. An {@code IllegalArgumentExException} will
      * be thrown otherwise.
      * <p>
+     * Once sunk, the ship will be recorded as sunk and only then can it be
+     * raised.
+     * <p>
      * @param ship     The ship to sink (non-rotated)
      * @param rotateCW The number of times to rotate the ship clockwise
      * @param x        The X coordinate of the ship origin
      * @param y        The Y coordinate of the ship origin
      * @return {@code true} if the ship is successfully sunk, {@code false}
      *         otherwise
+     * @see #raise(battleships.model.Ship)
      */
     boolean sink(Ship ship, int rotateCW, int x, int y);
 
     /**
-     * Raises a sunken ship as specified with rotation, at the position passed
-     * in.
+     * Raises a sunken ship.
      * <p>
-     * Position passed in should be the origin of the ship position, a.k.a (0,0)
-     * in the ship's coordinate list. Ship will only be successfully raised if
-     * all it's squares are in the {@code SUNK} state.
+     * The ship is raised at a position and rotation that it was previously
+     * sunk. A ship that was not sunk cannot be raised.
      * <p>
      * After the ship is "raised", it's squares will be set to {@code HIT}. The
      * state then can be changed with {@code stateChange()}.
      * <p>
      * The ship provided should be the non-rotated ship, that is equals to one
-     * of the ships in the ship list. An {@code IllegalArgumentExException} will
-     * be thrown otherwise.
+     * of the ships in the sunken ship list. An
+     * {@code IllegalArgumentExException} will be thrown otherwise.
      * <p>
-     * @param ship     The ship to raise (non-rotated)
-     * @param rotateCW The number of times to rotate the ship clockwise
-     * @param x        The X coordinate of the ship origin
-     * @param y        The Y coordinate of the ship origin
-     * @return {@code true} if the ship is successfully raised, {@code false}
-     *         otherwise
+     * @param ship The ship to raise (non-rotated)
      * @see #stateChange(int, int, battleships.model.Board.SquareState)
+     * @see #sink(battleships.model.Ship, int, int, int)
      */
-    boolean raise(Ship ship, int rotateCW, int x, int y);
+    void raise(Ship ship);
 }
