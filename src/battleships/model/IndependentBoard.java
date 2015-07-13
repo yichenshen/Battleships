@@ -157,7 +157,7 @@ public class IndependentBoard implements Board {
             boardMapper(summedProbMatrix,
                     ship,
                     (int newVal, Double orgVal, int total) -> {
-                        double newProb = (double) newVal / total;
+                        double newProb = total > 0 ? (double) newVal / total : 0;
                         return orgVal + newProb - orgVal * newProb;
                     });
         }
@@ -171,7 +171,7 @@ public class IndependentBoard implements Board {
     public Double[][] getProbabilityMatrix(Ship ship) {
         Double[][] probMatrix = new Double[getWidth()][getHeight()];
 
-        boardMapper(probMatrix, ship, (int newVal, Double orgVal, int total) -> ((double) newVal) / total);
+        boardMapper(probMatrix, ship, (int newVal, Double orgVal, int total) -> total > 0 ? ((double) newVal) / total : 0);
 
         return probMatrix;
     }
