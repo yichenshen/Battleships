@@ -348,8 +348,8 @@ public class HighSeas extends JPanel {
                     g2.drawString(Integer.toString(y), (float) (xRel + xOffset), (float) (yRel + yOffset));
                 }
 
-                Line2D.Double rowLine = new Line2D.Double(sqrSize + xOffset, ySquareStart + yOffset, (cols + 1) * sqrSize + xOffset, ySquareStart + yOffset);
-                g2.draw(rowLine);
+                Line2D.Double yGrid = new Line2D.Double(sqrSize + xOffset, ySquareStart + yOffset, (cols + 1) * sqrSize + xOffset, ySquareStart + yOffset);
+                g2.draw(yGrid);
             }
         }
     }
