@@ -208,4 +208,59 @@ public class IndependentBoardTest {
 
         assertArrayEquals(expected, board.getProbabilityMatrix());
     }
+
+    @Test
+    public void testSinkFalse() throws Exception {
+        assertFalse(board.sink(ship1, 0, 0, 0));
+    }
+
+    @Test
+    public void testSink() throws Exception {
+        board.stateChange(0, 0, Board.SquareState.HIT);
+        board.stateChange(0, 1, Board.SquareState.HIT);
+        board.stateChange(1, 0, Board.SquareState.HIT);
+
+        assertTrue(board.sink(ship1, 0, 0, 0));
+
+        Board.SquareState[][] expected = {
+            {Board.SquareState.SUNK, Board.SquareState.SUNK, Board.SquareState.OPEN},
+            {Board.SquareState.SUNK, Board.SquareState.OPEN, Board.SquareState.OPEN},
+            {Board.SquareState.OPEN, Board.SquareState.OPEN, Board.SquareState.OPEN}
+        };
+
+        assertArrayEquals(expected, board.getStatesMatrix());
+
+        int[][] expectedShips = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+
+        assertArrayEquals(expectedShips, board.getShipsMatrix(ship1));
+    }
+
+    @Test
+    public void testRaise() throws Exception {
+        board.stateChange(0, 0, Board.SquareState.HIT);
+        board.stateChange(0, 1, Board.SquareState.HIT);
+        board.stateChange(1, 0, Board.SquareState.HIT);
+
+        board.sink(ship1, 0, 0, 0);
+
+        board.raise(ship1);
+
+        Board.SquareState[][] expected = {
+            {Board.SquareState.HIT, Board.SquareState.HIT, Board.SquareState.OPEN},
+            {Board.SquareState.HIT, Board.SquareState.OPEN, Board.SquareState.OPEN},
+            {Board.SquareState.OPEN, Board.SquareState.OPEN, Board.SquareState.OPEN}
+        };
+
+        assertArrayEquals(expected, board.getStatesMatrix());
+
+        double[][] expectedProb = {{3, 6, 3}, {6, 12, 6}, {3, 6, 3}};
+
+        for (double[] row : expectedProb) {
+            for (int i = 0; i < row.length; i++) {
+                row[i] /= 16.0;
+            }
+        }
+
+        assertArrayEquals(expectedProb, board.getProbabilityMatrix(ship1));
+    }
 }

@@ -8,6 +8,7 @@ package battleships.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -83,6 +84,10 @@ public class IndependentBoard implements Board {
      * Stores the total number of configurations for each ship.
      */
     private Map<Ship, Integer> totalCounter;
+    /**
+     * Stores the configuration for the position of a sunken ship.
+     */
+    private Map<Ship, Collection<Square>> sunkMap;
     // </editor-fold>
 
     /**
@@ -117,6 +122,7 @@ public class IndependentBoard implements Board {
         ships = new ArrayList<>();
         possibleShipConfigs = new TreeMap<>();
         configActive = new HashMap<>();
+        sunkMap = new HashMap<>();
     }
 
     @Override
@@ -280,6 +286,87 @@ public class IndependentBoard implements Board {
         //TODO after everything is implemented, relook this line
         board[x][y] = newState;
         //TODO add in other states
+    }
+
+    @Override
+    public boolean sink(Ship ship, int rotateCW, int x, int y) {
+        if (!ships.contains(ship)) {
+            throw new IllegalArgumentException("No such ship!");
+        }
+
+        Ship rotatedShip = ship.rotateCWNinety(rotateCW);
+
+        boolean sinkable = true;
+        for (Iterator<Square> it = rotatedShip.iterator(); it.hasNext() && sinkable;) {
+            Square sqr = it.next();
+            int absX = sqr.getX() + x;
+            int absY = sqr.getY() + y;
+
+            if (absX >= 0 && absX < getWidth() && absY >= 0 && absY < getHeight()) {
+                sinkable &= board[absX][absY].equals(SquareState.HIT);
+            } else {
+                sinkable = false;
+            }
+        }
+
+        if (sinkable) {
+            Collection<Square> sunkPos = new ArrayList<>();
+            for (Square sqr : rotatedShip) {
+                int absX = sqr.getX() + x;
+                int absY = sqr.getY() + y;
+
+                //No need to disable since we're setting everything to inactive and 0.
+                board[absX][absY] = SquareState.SUNK;
+                sunkPos.add(new Square(absX, absY));
+            }
+
+            sunkMap.put(ship, sunkPos);
+
+            Collection<Integer> configList = shipToConfigID.get(ship);
+
+            configList.forEach((id) -> configActive.put(id, Boolean.FALSE));
+
+            totalCounter.put(ship, 0);
+
+            Integer[][] countMatrix = shipCounter.get(ship);
+
+            for (Integer[] row : countMatrix) {
+                for (int j = 0; j < row.length; j++) {
+                    row[j] = 0;
+                }
+            }
+        }
+
+        return sinkable;
+    }
+
+    @Override
+    public void raise(Ship ship) {
+        //TODO only unsink at sunk position instead
+        if (!sunkMap.containsKey(ship)) {
+            throw new IllegalArgumentException("No such sunken ship!");
+        }
+
+        sunkMap.get(ship).stream().forEach((sqr) -> board[sqr.getX()][sqr.getY()] = SquareState.HIT);
+
+        Collection<Integer> configList = shipToConfigID.get(ship);
+
+        configList.forEach((id) -> {
+            Iterable<Square> config = possibleShipConfigs.get(id);
+            if (checkConfig(config)) {
+                configActive.put(id, Boolean.TRUE);
+
+                config.forEach(
+                        (Square sqr) -> {
+                            shipCounter.get(ship)[sqr.getX()][sqr.getY()]++;
+                        }
+                );
+
+                totalCounter.put(ship, totalCounter.get(ship) + 1);
+            }
+        });
+
+        //TODO implement test
     }
 
     /**

@@ -150,11 +150,62 @@ public interface Board {
      * If the new state defined is illegal given the current state of the board,
      * an {@code IllegalStateException} is thrown.
      * <p>
+     * {@code SUNK} state cannot be assigned with this method, an
+     * {@code IllegalArguementException} will be thrown. Similarly, a square in
+     * the {@code SUNK} state cannot be changed. The ship should first be
+     * raised.
+     * <p>
      * @param x        X-coordinate of the square
      * @param y        Y-coordinate of the square
      * @param newState The state of the square to change to.
-     * @throws IllegalStateException If the new state is not allowed for the
-     *                               specified square.
+     * @throws IllegalStateException    If the new state is not allowed for the
+     *                                  specified square.
+     * @throws IllegalArgumentException If the new state is specified to be
+     *                                  {@code SUNK}
+     * @see #raise(battleships.model.Ship, int, int, int)
      */
     void stateChange(int x, int y, SquareState newState);
+
+    /**
+     * Sinks the ship as specified with rotation, at the position passed in.
+     * <p>
+     * Position passed in should be the origin of the ship position, a.k.a (0,0)
+     * in the ship's coordinate list. Ship will only be successfully sunk if all
+     * it's squares are in the {@code HIT} state.
+     * <p>
+     * The ship provided should be the non-rotated ship, that is equals to one
+     * of the ships in the ship list. An {@code IllegalArgumentExException} will
+     * be thrown otherwise.
+     * <p>
+     * Once sunk, the ship will be recorded as sunk and only then can it be
+     * raised.
+     * <p>
+     * @param ship     The ship to sink (non-rotated)
+     * @param rotateCW The number of times to rotate the ship clockwise
+     * @param x        The X coordinate of the ship origin
+     * @param y        The Y coordinate of the ship origin
+     * @return {@code true} if the ship is successfully sunk, {@code false}
+     *         otherwise
+     * @see #raise(battleships.model.Ship)
+     */
+    boolean sink(Ship ship, int rotateCW, int x, int y);
+
+    /**
+     * Raises a sunken ship.
+     * <p>
+     * The ship is raised at a position and rotation that it was previously
+     * sunk. A ship that was not sunk cannot be raised.
+     * <p>
+     * After the ship is "raised", it's squares will be set to {@code HIT}. The
+     * state then can be changed with {@code stateChange()}.
+     * <p>
+     * The ship provided should be the non-rotated ship, that is equals to one
+     * of the ships in the sunken ship list. An
+     * {@code IllegalArgumentExException} will be thrown otherwise.
+     * <p>
+     * @param ship The ship to raise (non-rotated)
+     * @see #stateChange(int, int, battleships.model.Board.SquareState)
+     * @see #sink(battleships.model.Ship, int, int, int)
+     */
+    void raise(Ship ship);
 }
