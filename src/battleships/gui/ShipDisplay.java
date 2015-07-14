@@ -43,22 +43,22 @@ public class ShipDisplay extends JPanel {
 
             try {
                 //Draw grid
-                double sqrSize = Math.min((getWidth() - 1) * 1.0 / (cols + 1), (getHeight() - 1) * 1.0 / (rows + 1));
+                double sqrSize = Math.min((getWidth() - 2) * 1.0 / cols, (getHeight() - 2) * 1.0 / rows);
 
                 double xOffset = (getWidth() - sqrSize * cols) / 2;
                 double yOffset = (getHeight() - sqrSize * rows) / 2;
 
-                for (int x = 1; x <= cols; x++) {
+                for (int x = 0; x <= cols; x++) {
                     double xSquareStart = x * sqrSize;
 
-                    Line2D.Double xGrid = new Line2D.Double(xSquareStart + xOffset, sqrSize + yOffset, xSquareStart + xOffset, (rows + 1) * sqrSize + yOffset);
+                    Line2D.Double xGrid = new Line2D.Double(xSquareStart + xOffset, yOffset, xSquareStart + xOffset, rows * sqrSize + yOffset);
                     g2.draw(xGrid);
                 }
 
-                for (int y = 1; y <= rows; y++) {
+                for (int y = 0; y <= rows; y++) {
                     double ySquareStart = y * sqrSize;
 
-                    Line2D.Double yGrid = new Line2D.Double(sqrSize + xOffset, ySquareStart + yOffset, (cols + 1) * sqrSize + xOffset, ySquareStart + yOffset);
+                    Line2D.Double yGrid = new Line2D.Double(xOffset, ySquareStart + yOffset, cols * sqrSize + xOffset, ySquareStart + yOffset);
                     g2.draw(yGrid);
                 }
                 //End of draw grid
