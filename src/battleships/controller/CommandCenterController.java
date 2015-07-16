@@ -80,6 +80,16 @@ public class CommandCenterController {
     }
 
     /**
+     * Gets the ship object by name.
+     * <p>
+     * @param name The name of the ship.
+     * @return The {@code Ship} object
+     */
+    public Ship getShip(String name) {
+        return ships.get(name);
+    }
+
+    /**
      * Gets the number of rows of the board.
      * <p>
      * @return The number of rows
