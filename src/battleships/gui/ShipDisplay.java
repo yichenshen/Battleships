@@ -6,9 +6,11 @@
 package battleships.gui;
 
 import battleships.model.Square;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 
 /**
@@ -59,16 +61,29 @@ public class ShipDisplay extends JPanel {
         super.paint(g);
 
         if (ship != null && rows > 0 && cols > 0) {
+            double sqrSize = Math.min((getWidth() - 2) * 1.0 / cols, (getHeight() - 2) * 1.0 / rows);
 
-            final Graphics2D g2 = (Graphics2D) g.create();
+            double xOffset = (getWidth() - sqrSize * cols) / 2;
+            double yOffset = (getHeight() - sqrSize * rows) / 2;
+
+            Graphics2D g2 = (Graphics2D) g.create();
 
             try {
-                //Draw grid
-                double sqrSize = Math.min((getWidth() - 2) * 1.0 / cols, (getHeight() - 2) * 1.0 / rows);
+                g2.setPaint(Color.DARK_GRAY);
+                for (Square sqr : ship) {
+                    Rectangle2D sqrShape = new Rectangle2D.Double(xOffset + sqr.getX() * sqrSize, yOffset + sqr.getY() * sqrSize, sqrSize, sqrSize);
 
-                double xOffset = (getWidth() - sqrSize * cols) / 2;
-                double yOffset = (getHeight() - sqrSize * rows) / 2;
+                    g2.fill(sqrShape);
+                }
+            } finally {
+                g2.dispose();
+            }
 
+            //Draw grid
+            g2 = (Graphics2D) g.create();
+
+            try {
+                g2.setPaint(Color.GRAY);
                 for (int x = 0; x <= cols; x++) {
                     double xSquareStart = x * sqrSize;
 
@@ -82,13 +97,10 @@ public class ShipDisplay extends JPanel {
                     Line2D.Double yGrid = new Line2D.Double(xOffset, ySquareStart + yOffset, cols * sqrSize + xOffset, ySquareStart + yOffset);
                     g2.draw(yGrid);
                 }
-                //End of draw grid
-
             } finally {
                 g2.dispose();
             }
+            //End of draw grid
         }
-
     }
-
 }
