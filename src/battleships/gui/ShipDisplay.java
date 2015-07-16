@@ -33,6 +33,27 @@ public class ShipDisplay extends JPanel {
     public ShipDisplay() {
     }
 
+    /**
+     * Displays the list of squares in the list provided.
+     * <p>
+     * This function sets the variables accordingly and then repaints the panel
+     * <p>
+     * @param squareList The list of square to display
+     */
+    public void display(Iterable<Square> squareList) {
+        this.ship = squareList;
+
+        cols = 0;
+        rows = 0;
+
+        squareList.forEach((sqr) -> {
+            cols = Math.max(cols, sqr.getX() + 1);
+            rows = Math.max(rows, sqr.getY() + 1);
+        });
+
+        repaint();
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
