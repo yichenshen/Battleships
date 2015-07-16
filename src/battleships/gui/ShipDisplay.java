@@ -25,8 +25,17 @@ import javax.swing.JPanel;
  */
 public class ShipDisplay extends JPanel {
 
+    /**
+     * Number of columns required for the grid.
+     */
     private int cols;
+    /**
+     * Number of rows required for the grid.
+     */
     private int rows;
+    /**
+     * The list of squares to display.
+     */
     private Iterable<Square> ship;
 
     /**

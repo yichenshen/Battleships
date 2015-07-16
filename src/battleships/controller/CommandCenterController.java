@@ -38,6 +38,9 @@ public class CommandCenterController {
      * A result cache to store processes data.
      */
     private double[][] resultCache;
+    /**
+     * A cache to store the board states.
+     */
     private Board.SquareState[][] stateCache;
     /**
      * The largest value for raw data in the data matrix.
@@ -75,6 +78,11 @@ public class CommandCenterController {
         }
     }
 
+    /**
+     * Gets the list of ship names present in this game.
+     * <p>
+     * @return The ship names
+     */
     public Set<String> getShipNames() {
         return ships.keySet();
     }
@@ -133,6 +141,14 @@ public class CommandCenterController {
         return resultCache;
     }
 
+    /**
+     * Returns the maximum result in the result matrix.
+     * <p>
+     * This method will return the cached max value. If the cache is empty, it
+     * will be recalculated.
+     * <p>
+     * @return The maximum value in the result matrix
+     */
     public int getMax() {
         if (resultCache == null) {
             recalculate();
@@ -140,6 +156,16 @@ public class CommandCenterController {
         return maxResult;
     }
 
+    /**
+     * Gets the value of the data at a certain square.
+     * <p>
+     * This method will return the cached data. If the cache is empty, it will
+     * be recalculated.
+     * <p>
+     * @param x The x position of the square.
+     * @param y The y position of the square.
+     * @return The data value.
+     */
     public int getSqaureVal(int x, int y) {
         if (resultCache == null) {
             recalculate();
@@ -223,5 +249,4 @@ public class CommandCenterController {
 
         maxResult = max;
     }
-    //TODO implment the rest of the methods
 }

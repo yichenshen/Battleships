@@ -20,9 +20,12 @@ import javax.swing.DefaultListModel;
 public class CommandCenter extends javax.swing.JFrame {
 
     /**
-     * The controller for this GUI
+     * The controller for this GUI.
      */
     private final CommandCenterController controller;
+    /**
+     * The list model for the ship list.
+     */
     private final DefaultListModel shipSelectModel;
 
     /**
@@ -265,6 +268,8 @@ public class CommandCenter extends javax.swing.JFrame {
     }//GEN-LAST:event_shipsListValueChanged
 
     /**
+     * Main method to start the GUI.
+     * <p>
      * @param args the command line arguments
      */
     public static void main(String args[]) {
