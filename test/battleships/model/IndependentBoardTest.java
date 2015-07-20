@@ -263,4 +263,20 @@ public class IndependentBoardTest {
 
         assertArrayEquals(expectedProb, board.getProbabilityMatrix(ship1));
     }
+    
+    @Test
+    public void testSunkStateToggle(){
+        board.stateChange(0, 0, Board.SquareState.HIT);
+        board.stateChange(0, 1, Board.SquareState.HIT);
+        board.stateChange(1, 0, Board.SquareState.HIT);
+        
+        board.sink(ship1, 0, 0, 0);
+        
+        Integer[][] expected = board.getShipsMatrix();
+        
+        board.stateChange(1, 1, Board.SquareState.HIT);
+        board.stateChange(1, 1, Board.SquareState.MISS);
+        
+        assertArrayEquals(expected, board.getShipsMatrix());
+    }
 }
