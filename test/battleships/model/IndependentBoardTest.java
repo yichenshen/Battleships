@@ -274,8 +274,8 @@ public class IndependentBoardTest {
         
         Integer[][] expected = board.getShipsMatrix();
         
-        board.stateChange(1, 1, Board.SquareState.HIT);
         board.stateChange(1, 1, Board.SquareState.MISS);
+        board.stateChange(1, 1, Board.SquareState.OPEN);
         
         assertArrayEquals(expected, board.getShipsMatrix());
     }
