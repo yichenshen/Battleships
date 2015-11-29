@@ -315,9 +315,11 @@ public class IndependentBoard implements Board {
                 int absX = sqr.getX() + x;
                 int absY = sqr.getY() + y;
 
-                //No need to disable since we're setting everything to inactive and 0.
+                //Disable required to deactivate configs of other ships
                 board[absX][absY] = SquareState.SUNK;
                 sunkPos.add(new Square(absX, absY));
+                
+                disable(absX, absY);
             }
 
             sunkMap.put(ship, sunkPos);
@@ -387,7 +389,6 @@ public class IndependentBoard implements Board {
                 int checkX = x + square.getX();
                 int checkY = y + square.getY();
 
-                //TODO Consider special case for HIT?
                 fits &= (board[checkX][checkY] == SquareState.OPEN || board[checkX][checkY] == SquareState.HIT);
             }
         }
