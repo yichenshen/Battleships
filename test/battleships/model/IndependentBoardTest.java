@@ -230,7 +230,7 @@ public class IndependentBoardTest {
 
         assertArrayEquals(expected, board.getStatesMatrix());
 
-        int[][] expectedShips = {{0, 0, 6}, {0, 8, 8}, {6, 8, 6}};
+        int[][] expectedShips = {{0, 0, 2}, {0, 4, 6}, {2, 6, 4}};
 
         assertArrayEquals(expectedShips, board.getShipsMatrix());
     }
