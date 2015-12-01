@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.model;
 
 import java.util.ArrayList;
@@ -93,7 +92,7 @@ public class IndependentBoard implements Board {
     /**
      * Creates a board with given width and height.
      * <p>
-     * @param width  The board width in squares
+     * @param width The board width in squares
      * @param height The board height in squares
      */
     public IndependentBoard(int width, int height) {
@@ -318,7 +317,7 @@ public class IndependentBoard implements Board {
                 //Disable required to deactivate configs of other ships
                 board[absX][absY] = SquareState.SUNK;
                 sunkPos.add(new Square(absX, absY));
-                
+
                 disable(absX, absY);
             }
 
@@ -376,10 +375,10 @@ public class IndependentBoard implements Board {
      * position, without interference from obstacles.
      * <p>
      * @param ship The ship
-     * @param x    The starting x-position
-     * @param y    The starting y-position
+     * @param x The starting x-position
+     * @param y The starting y-position
      * @return {@code true} if the ship can fit, {@code false} if the ship
-     *         cannot fit
+     * cannot fit
      */
     protected boolean checkConfig(Ship ship, int x, int y) {
         boolean fits = shipWithinBoard(ship, x, y);
@@ -402,9 +401,9 @@ public class IndependentBoard implements Board {
      * obstacles.
      * <p>
      * @param config The {@code Iterable} of squares that makes up the
-     *               configuration.
+     * configuration.
      * @return {@code true} if the configuration can fit, {@code false} if the
-     *         configuration cannot fit
+     * configuration cannot fit
      */
     protected boolean checkConfig(Iterable<Square> config) {
         boolean fits = true;
@@ -429,12 +428,11 @@ public class IndependentBoard implements Board {
      * the function provided.
      * <p>
      * @param resultMatrix Matrix to operate on (must be the same size as the
-     *                     board!)
-     * @param ship         The ship to map for
-     * @param folder       Function that takes in (boardCellData,
-     *                     originalMatrixData, shipTotalCount) and returns a new
-     *                     value to assign to the matrix.
-     * @param <T>          The data type of the matrix cells
+     * board!)
+     * @param ship The ship to map for
+     * @param folder Function that takes in (boardCellData, originalMatrixData,
+     * shipTotalCount) and returns a new value to assign to the matrix.
+     * @param <T> The data type of the matrix cells
      */
     protected <T> void boardMapper(T[][] resultMatrix, Ship ship, ShipFold<T> folder) {
         Integer[][] shipMatrix = shipCounter.get(ship);
@@ -469,12 +467,12 @@ public class IndependentBoard implements Board {
      * possible to add 2 identical configs and they will both contribute to
      * counts.
      * <p>
-     * @param orgShip     The ship for mapping
+     * @param orgShip The ship for mapping
      * @param shipRotated The ship, rotated for the config
-     * @param x           The starting x position of the config
-     * @param y           The starting y position of the config
+     * @param x The starting x position of the config
+     * @param y The starting y position of the config
      * @throws IllegalArgumentException If ship is out of board or
-     *                                  {@code orgShip} is invalid.
+     * {@code orgShip} is invalid.
      */
     void addConfig(Ship orgShip, Ship shipRotated, int x, int y) {
         if (!ships.contains(orgShip)) {
@@ -545,7 +543,7 @@ public class IndependentBoard implements Board {
                     Ship ship = getShipOfConfig(id);
                     Collection<Square> config = possibleShipConfigs.get(id);
 
-                    if (!configActive.get(id) && checkConfig(config)) {
+                    if (!configActive.get(id) && !sunkMap.containsKey(ship) && checkConfig(config)) {
                         configActive.put(id, Boolean.TRUE);
 
                         config.forEach(
