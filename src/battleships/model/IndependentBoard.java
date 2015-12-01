@@ -292,6 +292,10 @@ public class IndependentBoard implements Board {
         if (!ships.contains(ship)) {
             throw new IllegalArgumentException("No such ship!");
         }
+        
+        if (sunkMap.containsKey(ship)) {
+            throw new IllegalArgumentException("Ship already sunk!");
+        }
 
         Ship rotatedShip = ship.rotateCWNinety(rotateCW);
 
@@ -343,18 +347,20 @@ public class IndependentBoard implements Board {
 
     @Override
     public void raise(Ship ship) {
-        //TODO only unsink at sunk position instead
         if (!sunkMap.containsKey(ship)) {
             throw new IllegalArgumentException("No such sunken ship!");
         }
 
         sunkMap.get(ship).stream().forEach((sqr) -> board[sqr.getX()][sqr.getY()] = SquareState.HIT);
+        sunkMap.get(ship).stream().forEach((sqr) -> enable(sqr.getX(), sqr.getY()));
+
+        sunkMap.remove(ship);
 
         Collection<Integer> configList = shipToConfigID.get(ship);
 
         configList.forEach((id) -> {
             Iterable<Square> config = possibleShipConfigs.get(id);
-            if (checkConfig(config)) {
+            if (!configActive.get(id) && checkConfig(config)) {
                 configActive.put(id, Boolean.TRUE);
 
                 config.forEach(
