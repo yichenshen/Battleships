@@ -292,7 +292,7 @@ public class IndependentBoard implements Board {
         if (!ships.contains(ship)) {
             throw new IllegalArgumentException("No such ship!");
         }
-        
+
         if (sunkMap.containsKey(ship)) {
             throw new IllegalArgumentException("Ship already sunk!");
         }
@@ -372,8 +372,6 @@ public class IndependentBoard implements Board {
                 totalCounter.put(ship, totalCounter.get(ship) + 1);
             }
         });
-
-        //TODO implement test
     }
 
     /**

@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.model;
 
 import org.junit.After;
@@ -22,7 +21,7 @@ import org.junit.Test;
 public class IndependentBoardTest {
 
     private static final double DELTA = 0.00000000000000000000000001;
-    
+
     IndependentBoard board;
     //Test ships
     Ship ship1, ship2, ship3;
@@ -253,30 +252,32 @@ public class IndependentBoardTest {
 
         assertArrayEquals(expected, board.getStatesMatrix());
 
-        double[][] expectedProb = {{3, 6, 3}, {6, 12, 6}, {3, 6, 3}};
+        double val1 = 3.0 / 16 + 4.0 / 24 - 3.0 / 16 * 4.0 / 24;
+        val1 = val1 + 0.5 - val1 * 0.5;
 
-        for (double[] row : expectedProb) {
-            for (int i = 0; i < row.length; i++) {
-                row[i] /= 16.0;
-            }
-        }
+        double val2 = 6.0 / 16 + 6.0 / 24 - 6.0 / 16 * 6.0 / 24;
+        val2 = val2 + 0.5 - val2 * 0.5;
 
-        assertArrayEquals(expectedProb, board.getProbabilityMatrix(ship1));
+        double val3 = 12.0 / 16 + 8.0 / 24 - 12.0 / 16 * 8.0 / 24;
+
+        double[][] expectedProb = {{val1, val2, val1}, {val2, val3, val2}, {val1, val2, val1}};
+
+        assertArrayEquals(expectedProb, board.getProbabilityMatrix());
     }
-    
+
     @Test
-    public void testSunkStateToggle(){
+    public void testSunkStateToggle() {
         board.stateChange(0, 0, Board.SquareState.HIT);
         board.stateChange(0, 1, Board.SquareState.HIT);
         board.stateChange(1, 0, Board.SquareState.HIT);
-        
+
         board.sink(ship1, 0, 0, 0);
-        
+
         Integer[][] expected = board.getShipsMatrix();
-        
+
         board.stateChange(1, 1, Board.SquareState.MISS);
         board.stateChange(1, 1, Board.SquareState.OPEN);
-        
+
         assertArrayEquals(expected, board.getShipsMatrix());
     }
 }
