@@ -229,6 +229,7 @@ public class HighSeas extends JPanel {
      */
     public void setSinkShip(Ship sinkShip) {
         this.sinkShip = sinkShip;
+        refresh();
     }
 
     /**

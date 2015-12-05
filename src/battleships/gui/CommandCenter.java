@@ -6,6 +6,7 @@ package battleships.gui;
 
 import battleships.controller.CommandCenterController;
 import battleships.model.Ship;
+import java.awt.event.MouseEvent;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 
@@ -30,22 +31,32 @@ public class CommandCenter extends javax.swing.JFrame {
      * The selected ship object.
      */
     private Ship select;
+    /**
+     * The number of clockwise rotations the sunken ship has undergone.
+     *
+     * Value should be between 0 to 3, reset once limit is passed.
+     */
+    private int sinkRotate = 0;
+    /**
+     * The mode indicator for when the GUI is in sinking mode.
+     */
+    private boolean sinking;
 
     /**
      * Creates new form CommandCenter
      */
     public CommandCenter() {
         controller = new CommandCenterController();
-        
+
         shipSelectModel = new DefaultListModel();
         Set<String> names = controller.getShipNames();
-        
+
         names.forEach((name) -> shipSelectModel.addElement(name));
-        
+
         initComponents();
-        
+
         highSeasBoard.setSquares(controller.getBoardWidth(), controller.getBoardHeight());
-        
+
         highSeasBoard.setData(controller.getData(), controller.getStateData());
     }
 
@@ -225,16 +236,16 @@ public class CommandCenter extends javax.swing.JFrame {
 
     private void highSeasBoardMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseMoved
         highSeasBoard.setMousePos(evt.getX(), evt.getY());
-        
+
         int x = highSeasBoard.getGridX(evt.getX());
         int y = highSeasBoard.getGridY(evt.getY());
-        
+
         if (x != -1 && y != -1) {
-            
+
             StringBuilder label = new StringBuilder();
-            
+
             label.append("(").append(x + 1).append(", ").append(y + 1).append("): ");
-            
+
             switch (controller.getStateData()[x][y]) {
                 case OPEN: {
                     label.append(controller.getSqaureVal(x, y)).append(" possible configs.");
@@ -249,9 +260,9 @@ public class CommandCenter extends javax.swing.JFrame {
                     break;
                 }
             }
-            
+
             label.append(" Highest: ").append(controller.getMax());
-            
+
             statusLabel.setText(label.toString());
         } else {
             statusLabel.setText("Status");
@@ -261,11 +272,22 @@ public class CommandCenter extends javax.swing.JFrame {
     private void highSeasBoardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseClicked
         int x = highSeasBoard.getGridX(evt.getX());
         int y = highSeasBoard.getGridY(evt.getY());
-        
-        if (x != -1 && y != -1) {
-            controller.stateChange(x, y);
-            
-            highSeasBoard.setData(controller.getData(), controller.getStateData());
+
+        if (sinking) {
+            if (evt.getButton() == MouseEvent.BUTTON1) {
+
+            } else if (evt.getButton() == MouseEvent.BUTTON3) {
+                sinkRotate = ++sinkRotate % 4;
+
+                highSeasBoard.setSinkShip(select.rotateCWNinety(sinkRotate));
+
+            }
+        } else if (evt.getButton() == MouseEvent.BUTTON1) {
+            if (x != -1 && y != -1) {
+                controller.stateChange(x, y);
+
+                highSeasBoard.setData(controller.getData(), controller.getStateData());
+            }
         }
     }//GEN-LAST:event_highSeasBoardMouseClicked
 
@@ -282,6 +304,7 @@ public class CommandCenter extends javax.swing.JFrame {
         shipsList.setEnabled(false);
         sinkButton.setEnabled(false);
         //TODO change board mode
+        sinking = true;
     }//GEN-LAST:event_sinkButtonActionPerformed
 
     /**
@@ -300,10 +323,12 @@ public class CommandCenter extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CommandCenter.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(CommandCenter.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
