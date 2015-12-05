@@ -6,9 +6,14 @@ package battleships.gui;
 
 import battleships.controller.CommandCenterController;
 import battleships.model.Ship;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.Set;
+import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 /**
  * The main and standard GUI for displaying and calculating probabilities for a
@@ -58,6 +63,22 @@ public class CommandCenter extends javax.swing.JFrame {
         highSeasBoard.setSquares(controller.getBoardWidth(), controller.getBoardHeight());
 
         highSeasBoard.setData(controller.getData(), controller.getStateData());
+
+        highSeasBoard.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "exitSink");
+
+        highSeasBoard.getActionMap().put("exitSink", new AbstractAction() {
+            private static final long serialVersionUID = -5644390861803492172L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (sinking) {
+                    highSeasBoard.setSinkShip(null);
+                    sinking = false;
+                    shipsList.setEnabled(true);
+                    sinkButton.setEnabled(true);
+                }
+            }
+        });
     }
 
     /**
