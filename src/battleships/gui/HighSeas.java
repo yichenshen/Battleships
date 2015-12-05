@@ -2,10 +2,11 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.gui;
 
 import battleships.model.Board;
+import battleships.model.Ship;
+import battleships.model.Square;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -105,6 +106,13 @@ public class HighSeas extends JPanel {
      * This is used to determine the overlays for hover.
      */
     private int mouseGridY = -1;
+    /**
+     * The ship that is trying to be sunk.
+     * <p>
+     * If this object is not null, display a overlay of the ship instead of the
+     * grid.
+     */
+    private Ship sinkShip = null;
 
     /**
      * Create a new HighSeas Panel.
@@ -178,7 +186,7 @@ public class HighSeas extends JPanel {
      * Note: This method does not make a copy of the array, and thus the array
      * may be modified else where.
      * <p>
-     * @param newData   The new data to be represented.
+     * @param newData The new data to be represented.
      * @param newStates The new states of the board.
      */
     public void setData(double[][] newData, Board.SquareState[][] newStates) {
@@ -209,6 +217,21 @@ public class HighSeas extends JPanel {
     }
 
     /**
+     * Sets the ship to be sunk.
+     *
+     * Supplying a ship will cause this panel to enter sinking mode. The normal
+     * square overlay cross will not be shown. Instead, the ship itself will be
+     * overlaid on the board. Rotation is to be provided by the caller.
+     *
+     * Supplying null will change the board back to normal mode.
+     *
+     * @param sinkShip The ship to be sunk or null.
+     */
+    public void setSinkShip(Ship sinkShip) {
+        this.sinkShip = sinkShip;
+    }
+
+    /**
      * Refreshes the board.
      * <p>
      * This method calculates the the suitable square size based on the current
@@ -228,6 +251,25 @@ public class HighSeas extends JPanel {
         super.paint(g);
 
         if (data != null) {
+
+            boolean[][] shipMap = null;
+
+            //Sets the ship map for easy reference later
+            if (sinkShip != null) {
+                Square size = sinkShip.getMaxSquare();
+                shipMap = new boolean[size.getX() + 1][size.getY() + 1];
+
+                for (boolean[] shipMapRow : shipMap) {
+                    for (int j = 0; j < shipMapRow.length; j++) {
+                        shipMapRow[j] = false;
+                    }
+                }
+
+                for (Square square : sinkShip) {
+                    shipMap[square.getX()][square.getY()] = true;
+                }
+            }
+
             for (int i = 0; i < data.length; i++) {
                 for (int j = 0; j < data[i].length; j++) {
                     final Graphics2D g2 = (Graphics2D) g.create();
@@ -246,9 +288,21 @@ public class HighSeas extends JPanel {
                         g2.fill(cell);
 
                         //Paint overlay for hover
-                        if (mouseGridX != -1 && mouseGridY != -1 && (i == mouseGridX || j == mouseGridY)) {
-                            g2.setPaint(OVERLAY);
-                            g2.fill(cell);
+                        g2.setPaint(OVERLAY);
+
+                        if (mouseGridX != -1 && mouseGridY != -1) {
+                            if (shipMap == null) {
+                                if (i == mouseGridX || j == mouseGridY) {
+                                    g2.fill(cell);
+                                }
+                            } else { //Draw sinking ship
+                                int newX = i - mouseGridX;
+                                int newY = j - mouseGridY;
+
+                                if (newX >= 0 && newX < shipMap.length && newY >= 0 && newY < shipMap[newX].length && shipMap[newX][newY]) {
+                                    g2.fill(cell);
+                                }
+                            }
                         }
 
                         //Draw state markers

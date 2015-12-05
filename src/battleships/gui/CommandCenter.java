@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.gui;
 
 import battleships.controller.CommandCenterController;
@@ -27,22 +26,26 @@ public class CommandCenter extends javax.swing.JFrame {
      * The list model for the ship list.
      */
     private final DefaultListModel shipSelectModel;
+    /**
+     * The selected ship object.
+     */
+    private Ship select;
 
     /**
      * Creates new form CommandCenter
      */
     public CommandCenter() {
         controller = new CommandCenterController();
-
+        
         shipSelectModel = new DefaultListModel();
         Set<String> names = controller.getShipNames();
-
+        
         names.forEach((name) -> shipSelectModel.addElement(name));
-
+        
         initComponents();
-
+        
         highSeasBoard.setSquares(controller.getBoardWidth(), controller.getBoardHeight());
-
+        
         highSeasBoard.setData(controller.getData(), controller.getStateData());
     }
 
@@ -76,8 +79,14 @@ public class CommandCenter extends javax.swing.JFrame {
 
         sinkButton.setFont(new java.awt.Font("Droid Sans", 0, 15)); // NOI18N
         sinkButton.setText("Sink");
+        sinkButton.setEnabled(false);
         sinkButton.setMaximumSize(new java.awt.Dimension(100, 28));
         sinkButton.setPreferredSize(new java.awt.Dimension(80, 28));
+        sinkButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sinkButtonActionPerformed(evt);
+            }
+        });
         buttonPanel.add(sinkButton);
 
         shipsList.setModel(shipSelectModel);
@@ -216,16 +225,16 @@ public class CommandCenter extends javax.swing.JFrame {
 
     private void highSeasBoardMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseMoved
         highSeasBoard.setMousePos(evt.getX(), evt.getY());
-
+        
         int x = highSeasBoard.getGridX(evt.getX());
         int y = highSeasBoard.getGridY(evt.getY());
-
+        
         if (x != -1 && y != -1) {
-
+            
             StringBuilder label = new StringBuilder();
-
+            
             label.append("(").append(x + 1).append(", ").append(y + 1).append("): ");
-
+            
             switch (controller.getStateData()[x][y]) {
                 case OPEN: {
                     label.append(controller.getSqaureVal(x, y)).append(" possible configs.");
@@ -240,9 +249,9 @@ public class CommandCenter extends javax.swing.JFrame {
                     break;
                 }
             }
-
+            
             label.append(" Highest: ").append(controller.getMax());
-
+            
             statusLabel.setText(label.toString());
         } else {
             statusLabel.setText("Status");
@@ -252,20 +261,28 @@ public class CommandCenter extends javax.swing.JFrame {
     private void highSeasBoardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseClicked
         int x = highSeasBoard.getGridX(evt.getX());
         int y = highSeasBoard.getGridY(evt.getY());
-
+        
         if (x != -1 && y != -1) {
             controller.stateChange(x, y);
-
+            
             highSeasBoard.setData(controller.getData(), controller.getStateData());
         }
     }//GEN-LAST:event_highSeasBoardMouseClicked
 
     private void shipsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_shipsListValueChanged
         if (!evt.getValueIsAdjusting()) {
-            Ship select = controller.getShip(shipsList.getSelectedValue().toString());
+            select = controller.getShip(shipsList.getSelectedValue().toString());
+            sinkButton.setEnabled(true);
             shipDisplay.display(select);
         }
     }//GEN-LAST:event_shipsListValueChanged
+
+    private void sinkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sinkButtonActionPerformed
+        highSeasBoard.setSinkShip(select);
+        shipsList.setEnabled(false);
+        sinkButton.setEnabled(false);
+        //TODO change board mode
+    }//GEN-LAST:event_sinkButtonActionPerformed
 
     /**
      * Main method to start the GUI.
