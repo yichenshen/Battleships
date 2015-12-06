@@ -71,12 +71,7 @@ public class CommandCenter extends javax.swing.JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (sinking) {
-                    highSeasBoard.setSinkShip(null);
-                    sinking = false;
-                    shipsList.setEnabled(true);
-                    sinkButton.setEnabled(true);
-                }
+                exitSinkMode();
             }
         });
     }
@@ -297,11 +292,17 @@ public class CommandCenter extends javax.swing.JFrame {
         if (sinking) {
             if (evt.getButton() == MouseEvent.BUTTON1) {
 
+                    if (controller.sinkShip(select, sinkRotate, x, y)) {
+                        highSeasBoard.setData(controller.getData(), controller.getStateData());
+
+                        exitSinkMode();
+                    } else{
+                        statusLabel.setText("Invalid position to sink ship!");
+                    }
             } else if (evt.getButton() == MouseEvent.BUTTON3) {
                 sinkRotate = ++sinkRotate % 4;
 
                 highSeasBoard.setSinkShip(select.rotateCWNinety(sinkRotate));
-
             }
         } else if (evt.getButton() == MouseEvent.BUTTON1) {
             if (x != -1 && y != -1) {
@@ -324,7 +325,6 @@ public class CommandCenter extends javax.swing.JFrame {
         highSeasBoard.setSinkShip(select);
         shipsList.setEnabled(false);
         sinkButton.setEnabled(false);
-        //TODO change board mode
         sinking = true;
     }//GEN-LAST:event_sinkButtonActionPerformed
 
@@ -357,6 +357,15 @@ public class CommandCenter extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             new CommandCenter().setVisible(true);
         });
+    }
+
+    private void exitSinkMode() {
+        if (sinking) {
+            highSeasBoard.setSinkShip(null);
+            sinking = false;
+            shipsList.setEnabled(true);
+            sinkButton.setEnabled(true);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.controller;
 
 import battleships.model.BasicShip;
@@ -211,6 +210,16 @@ public class CommandCenterController {
         }
 
         recalculate();
+    }
+
+    public boolean sinkShip(Ship ship, int rotate, int x, int y) {
+        boolean ret = board.sink(ship, rotate, x, y);
+
+        if (ret) {
+            recalculate();
+        }
+
+        return ret;
     }
 
     /**

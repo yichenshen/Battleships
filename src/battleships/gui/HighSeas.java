@@ -329,6 +329,22 @@ public class HighSeas extends JPanel {
                                 g2.draw(cross);
                                 break;
                             }
+                            case SUNK: {
+                                Ellipse2D mark = new Ellipse2D.Double(xIni, yIni, sqrSize - PADDING * 2, sqrSize - PADDING * 2);
+                                g2.draw(mark);
+
+                                double offset = (1 - Math.sqrt(2) / 2) * sqrSize / 2;
+
+                                Path2D cross = new Path2D.Double();
+                                cross.moveTo(xIni + offset, yIni + offset);
+                                cross.lineTo(xIni + sqrSize - offset - PADDING * 2, yIni + sqrSize - offset - PADDING * 2);
+
+                                cross.moveTo(xIni + sqrSize - offset - PADDING * 2, yIni + offset);
+                                cross.lineTo(xIni + offset, yIni + sqrSize - offset - PADDING * 2);
+
+                                g2.draw(cross);
+                                break;
+                            }
                         }
                     } finally {
                         g2.dispose();
