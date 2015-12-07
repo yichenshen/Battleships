@@ -60,6 +60,12 @@ public class HighSeas extends JPanel {
      * Padding for markers in the square.
      */
     private static final int PADDING = 2;
+    /**
+     * The UID for serialization.
+     *
+     * Randomly generated.
+     */
+    private static final long serialVersionUID = 7343048721965194497L;
 
     /**
      * Number of columns for the grid.

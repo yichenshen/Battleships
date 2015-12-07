@@ -25,6 +25,13 @@ import javax.swing.KeyStroke;
 public class CommandCenter extends javax.swing.JFrame {
 
     /**
+     * The UID for serialization.
+     *
+     * Randomly generated.
+     */
+    private static final long serialVersionUID = -5521507859235289007L;
+
+    /**
      * The controller for this GUI.
      */
     private final CommandCenterController controller;

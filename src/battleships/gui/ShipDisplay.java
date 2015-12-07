@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.gui;
 
 import battleships.model.Square;
@@ -24,6 +23,13 @@ import javax.swing.JPanel;
  * @since v1.0.0
  */
 public class ShipDisplay extends JPanel {
+
+    /**
+     * The UID for serialization.
+     *
+     * Randomly generated.
+     */
+    private static final long serialVersionUID = -6762064327370862685L;
 
     /**
      * Number of columns required for the grid.
