@@ -2,7 +2,6 @@
  * Copyright (c) 2015. Shen Yichen <2007.yichen@gmail.com>
  * Under The MIT License.
  */
-
 package battleships.model;
 
 import java.util.Collection;
@@ -124,10 +123,10 @@ public interface Board {
      * Checks if the ship could fit into the board at specified position.
      * <p>
      * @param ship The ship
-     * @param x    Starting x-position
-     * @param y    Starting y-position
+     * @param x Starting x-position
+     * @param y Starting y-position
      * @return {@code true} if the ship fits, {@code false} if the ship extends
-     *         of out of the board
+     * of out of the board
      */
     boolean shipWithinBoard(Ship ship, int x, int y);
 
@@ -135,9 +134,9 @@ public interface Board {
      * Checks if the ship could fit into the board at specified position.
      * <p>
      * @param ship The ship
-     * @param sqr  The starting position
+     * @param sqr The starting position
      * @return {@code true} if the ship fits, {@code false} if the ship extends
-     *         of out of the board
+     * of out of the board
      */
     boolean shipWithinBoard(Ship ship, Square sqr);
 
@@ -155,13 +154,13 @@ public interface Board {
      * the {@code SUNK} state cannot be changed. The ship should first be
      * raised.
      * <p>
-     * @param x        X-coordinate of the square
-     * @param y        Y-coordinate of the square
+     * @param x X-coordinate of the square
+     * @param y Y-coordinate of the square
      * @param newState The state of the square to change to.
-     * @throws IllegalStateException    If the new state is not allowed for the
-     *                                  specified square.
+     * @throws IllegalStateException If the new state is not allowed for the
+     * specified square.
      * @throws IllegalArgumentException If the new state is specified to be
-     *                                  {@code SUNK}
+     * {@code SUNK}
      * @see #raise(battleships.model.Ship, int, int, int)
      */
     void stateChange(int x, int y, SquareState newState);
@@ -180,12 +179,12 @@ public interface Board {
      * Once sunk, the ship will be recorded as sunk and only then can it be
      * raised.
      * <p>
-     * @param ship     The ship to sink (non-rotated)
+     * @param ship The ship to sink (non-rotated)
      * @param rotateCW The number of times to rotate the ship clockwise
-     * @param x        The X coordinate of the ship origin
-     * @param y        The Y coordinate of the ship origin
+     * @param x The X coordinate of the ship origin
+     * @param y The Y coordinate of the ship origin
      * @return {@code true} if the ship is successfully sunk, {@code false}
-     *         otherwise
+     * otherwise
      * @see #raise(battleships.model.Ship)
      */
     boolean sink(Ship ship, int rotateCW, int x, int y);
@@ -208,4 +207,15 @@ public interface Board {
      * @see #sink(battleships.model.Ship, int, int, int)
      */
     void raise(Ship ship);
+
+    /**
+     * Checks if the ship is sunk.
+     *
+     * Throws an {@code IllegalArguementException} if the ship does not belong
+     * to the board.
+     *
+     * @param ship The original non-rotated ship object
+     * @return {@code true} if the ship has been sunk, {@code false} otherwise
+     */
+    boolean isSunk(Ship ship);
 }

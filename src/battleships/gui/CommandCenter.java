@@ -52,23 +52,23 @@ public class CommandCenter extends javax.swing.JFrame {
      */
     public CommandCenter() {
         controller = new CommandCenterController();
-
+        
         shipSelectModel = new DefaultListModel();
         Set<String> names = controller.getShipNames();
-
+        
         names.forEach((name) -> shipSelectModel.addElement(name));
-
+        
         initComponents();
-
+        
         highSeasBoard.setSquares(controller.getBoardWidth(), controller.getBoardHeight());
-
+        
         highSeasBoard.setData(controller.getData(), controller.getStateData());
-
+        
         highSeasBoard.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "exitSink");
-
+        
         highSeasBoard.getActionMap().put("exitSink", new AbstractAction() {
             private static final long serialVersionUID = -5644390861803492172L;
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 exitSinkMode();
@@ -252,16 +252,16 @@ public class CommandCenter extends javax.swing.JFrame {
 
     private void highSeasBoardMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseMoved
         highSeasBoard.setMousePos(evt.getX(), evt.getY());
-
+        
         int x = highSeasBoard.getGridX(evt.getX());
         int y = highSeasBoard.getGridY(evt.getY());
-
+        
         if (x != -1 && y != -1) {
-
+            
             StringBuilder label = new StringBuilder();
-
+            
             label.append("(").append(x + 1).append(", ").append(y + 1).append("): ");
-
+            
             switch (controller.getStateData()[x][y]) {
                 case OPEN: {
                     label.append(controller.getSqaureVal(x, y)).append(" possible configs.");
@@ -276,9 +276,9 @@ public class CommandCenter extends javax.swing.JFrame {
                     break;
                 }
             }
-
+            
             label.append(" Highest: ").append(controller.getMax());
-
+            
             statusLabel.setText(label.toString());
         } else {
             statusLabel.setText("Status");
@@ -288,26 +288,27 @@ public class CommandCenter extends javax.swing.JFrame {
     private void highSeasBoardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highSeasBoardMouseClicked
         int x = highSeasBoard.getGridX(evt.getX());
         int y = highSeasBoard.getGridY(evt.getY());
-
+        
         if (sinking) {
             if (evt.getButton() == MouseEvent.BUTTON1) {
-
-                    if (controller.sinkShip(select, sinkRotate, x, y)) {
-                        highSeasBoard.setData(controller.getData(), controller.getStateData());
-
-                        exitSinkMode();
-                    } else{
-                        statusLabel.setText("Invalid position to sink ship!");
-                    }
+                
+                if (controller.sinkShip(select, sinkRotate, x, y)) {
+                    highSeasBoard.setData(controller.getData(), controller.getStateData());
+                    sinkButton.setText("Raise");
+                    
+                    exitSinkMode();
+                } else {
+                    statusLabel.setText("Invalid position to sink ship!");
+                }
             } else if (evt.getButton() == MouseEvent.BUTTON3) {
                 sinkRotate = ++sinkRotate % 4;
-
+                
                 highSeasBoard.setSinkShip(select.rotateCWNinety(sinkRotate));
             }
         } else if (evt.getButton() == MouseEvent.BUTTON1) {
             if (x != -1 && y != -1) {
                 controller.stateChange(x, y);
-
+                
                 highSeasBoard.setData(controller.getData(), controller.getStateData());
             }
         }
@@ -318,6 +319,12 @@ public class CommandCenter extends javax.swing.JFrame {
             select = controller.getShip(shipsList.getSelectedValue().toString());
             sinkButton.setEnabled(true);
             shipDisplay.display(select);
+            
+            if (controller.isSunk(select)) {
+                sinkButton.setText("Raise");
+            } else {
+                sinkButton.setText("Sink");
+            }
         }
     }//GEN-LAST:event_shipsListValueChanged
 
@@ -344,7 +351,7 @@ public class CommandCenter extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-
+                    
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
@@ -358,7 +365,7 @@ public class CommandCenter extends javax.swing.JFrame {
             new CommandCenter().setVisible(true);
         });
     }
-
+    
     private void exitSinkMode() {
         if (sinking) {
             highSeasBoard.setSinkShip(null);

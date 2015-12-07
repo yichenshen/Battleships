@@ -212,6 +212,20 @@ public class CommandCenterController {
         recalculate();
     }
 
+    /**
+     * Sinks the ship at the position.
+     *
+     * Throws {@code IllegalArugumentException} if ship is already sunk.
+     *
+     * Recalculates probabilities afterwards.
+     *
+     * @param ship The ship to sink
+     * @param rotate The number of rotations clockwise
+     * @param x The x position to reference the position from
+     * @param y The y position to reference the position from
+     * @return {@code true} if the ship was successfully sunk, {@code false}
+     * otherwise
+     */
     public boolean sinkShip(Ship ship, int rotate, int x, int y) {
         boolean ret = board.sink(ship, rotate, x, y);
 
@@ -220,6 +234,19 @@ public class CommandCenterController {
         }
 
         return ret;
+    }
+
+    /**
+     * Checks if the ship is sunk.
+     *
+     * Throws an {@code IllegalArgumentException} if the ship does not exist on
+     * the board.
+     *
+     * @param ship The original non-rotated ship object.
+     * @return {@code true} if the ship has been sunk, {@code false} otherwise
+     */
+    public boolean isSunk(Ship ship) {
+        return board.isSunk(ship);
     }
 
     /**

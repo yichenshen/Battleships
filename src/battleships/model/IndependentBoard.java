@@ -374,6 +374,15 @@ public class IndependentBoard implements Board {
         });
     }
 
+    @Override
+    public boolean isSunk(Ship ship) {
+        if (!ships.contains(ship)) {
+            throw new IllegalArgumentException("No such ship on board!");
+        }
+
+        return sunkMap.containsKey(ship);
+    }
+
     /**
      * Check if the ship could fit onto the board starting at the specified
      * position, without interference from obstacles.
