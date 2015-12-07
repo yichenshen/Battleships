@@ -237,6 +237,18 @@ public class CommandCenterController {
     }
 
     /**
+     * Raises a sunken ship.
+     *
+     * @param ship The original ship object to raise (non-rotated)
+     * @throws IllegalArgumentException If the ship does not exists or is not
+     * sunk
+     */
+    public void raiseShip(Ship ship) {
+        board.raise(ship);
+        recalculate();
+    }
+
+    /**
      * Checks if the ship is sunk.
      *
      * Throws an {@code IllegalArgumentException} if the ship does not exist on
