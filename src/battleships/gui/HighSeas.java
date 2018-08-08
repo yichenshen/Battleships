@@ -7,6 +7,8 @@ package battleships.gui;
 import battleships.model.Board;
 import battleships.model.Ship;
 import battleships.model.Square;
+
+import javax.swing.JPanel;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -16,7 +18,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
-import javax.swing.JPanel;
 
 /**
  * A GUI panel for the game board display.
@@ -51,7 +52,7 @@ public class HighSeas extends JPanel {
     /**
      * The HSB saturation for square colouring.
      */
-    private static final float SATURATION = 1f;
+    private static final float SATURATION = 0.6f;
     /**
      * The polynomial exponent for increasing hue.
      */
